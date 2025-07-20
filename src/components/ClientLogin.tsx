@@ -22,7 +22,7 @@ const ClientLogin: React.FC = () => {
     setTimeout(() => {
       setIsLoading(false);
       // TODO: Implement actual authentication
-      console.log('Login attempt:', { email, password });
+      // console.log('Login attempt:', { email, password });
     }, 1500);
   };
 
@@ -36,7 +36,7 @@ const ClientLogin: React.FC = () => {
       setShowForgotPassword(false);
       setResetEmail('');
       // TODO: Implement actual password reset
-      console.log('Password reset for:', resetEmail);
+      // console.log('Password reset for:', resetEmail);
     }, 1000);
   };
 
@@ -193,7 +193,7 @@ const ClientLogin: React.FC = () => {
 
           <div className="mt-8 pt-6 border-t border-gray-200">
             <p className="text-xs text-gray-500 text-center">
-              Need help accessing your account?{' '}
+              Need help accessing your account?{` `}
               <button
                 onClick={() => {
                   const element = document.getElementById('contact');

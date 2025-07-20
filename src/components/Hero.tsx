@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 
 const Hero: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -25,14 +26,14 @@ const Hero: React.FC = () => {
     }
   };
 
-  const scrollToContact = () => {
-    const element = document.getElementById('contact');
-    if (element) {
-      const headerHeight = 64; // h-16 = 64px
-      const elementPosition = element.offsetTop - headerHeight;
-      window.scrollTo({ top: elementPosition, behavior: 'smooth' });
-    }
-  };
+  // const scrollToContact = () => {
+  //   const element = document.getElementById('contact');
+  //   if (element) {
+  //     const headerHeight = 64; // h-16 = 64px
+  //     const elementPosition = element.offsetTop - headerHeight;
+  //     window.scrollTo({ top: elementPosition, behavior: 'smooth' });
+  //   }
+  // };
 
   const scrollToClientLogin = () => {
     const element = document.getElementById('client-login');
@@ -62,18 +63,16 @@ const Hero: React.FC = () => {
     <section id="home" className="min-h-screen flex items-center justify-center relative overflow-hidden" style={{ marginTop: 0, paddingTop: 0 }}>
       {/* Background Image with Overlay - Hero section only */}
       <div className="absolute inset-0 w-full h-full overflow-hidden z-0">
-        <img
+        <Image
           src="/images/IMG_2296_optimized.jpg"
           alt="MPDEE Creative Studio Background"
-          className="absolute inset-0 w-full h-full object-cover"
+          fill
+          className="object-cover"
           style={{
             objectPosition: 'center top',
-            minWidth: '100%',
-            minHeight: '100%',
             opacity: '0.25',
-            top: 0,
-            left: 0
           }}
+          priority
         />
         <div className="absolute inset-0 bg-gradient-to-br from-white/50 to-gray-50/30"></div>
       </div>

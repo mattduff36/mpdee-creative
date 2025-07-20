@@ -67,7 +67,7 @@ const Contact: React.FC = () => {
             Get In Touch
           </h2>
           <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
-            Ready to start your project? Let's discuss how we can help bring your vision to life.
+            Ready to start your project? Let&apos;s discuss how we can help bring your vision to life.
           </p>
         </div>
 
@@ -77,7 +77,7 @@ const Contact: React.FC = () => {
               <div className="text-6xl mb-4">✅</div>
               <h3 className="text-2xl font-bold text-gray-900 mb-2">Thank You!</h3>
               <p className="text-gray-600">
-                Your message has been sent successfully. We'll get back to you soon!
+                Your message has been sent successfully. We&apos;ll get back to you soon!
               </p>
             </div>
           ) : (

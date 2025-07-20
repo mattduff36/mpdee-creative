@@ -6,7 +6,7 @@ interface NavigationProps {
   logo?: string;
 }
 
-const Navigation = ({ logo = 'MPDEE Creative' }: NavigationProps) => {
+const Navigation = ({ logo }: NavigationProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('');
   const [isScrolled, setIsScrolled] = useState(false);
