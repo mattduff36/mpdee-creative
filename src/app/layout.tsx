@@ -6,10 +6,11 @@ import './globals.css';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'MPDEE Creative - Professional Web Design & Development',
+  metadataBase: new URL('https://mpdee-creative.vercel.app'),
+  title: 'MPDEE Creative - Professional Audio Production Services',
   description:
-    'Creative web design and development services. We create beautiful, functional websites that drive results for your business. Expert UI/UX design and full-stack development.',
-  keywords: 'web design, web development, creative design, UI/UX design, full-stack development, business websites',
+    'Professional audio production services specializing in radio commercial production, audio imaging, and event recording. High-quality sound design and production.',
+  keywords: 'radio commercials, audio production, radio commercial production, audio imaging, event recording, voice talent, sound design, radio advertising',
   authors: [{ name: 'MPDEE Creative' }],
   robots: 'index, follow',
   icons: {
