@@ -171,7 +171,7 @@ const Contact: React.FC = () => {
             <div>
               <div className="text-2xl mb-2">📧</div>
               <h3 className="font-semibold text-gray-900 mb-1">Email</h3>
-              <p className="text-gray-600">hello@mpdee-creative.com</p>
+              <p className="text-gray-600">creative@mpdee.co.uk</p>
             </div>
             <div>
               <div className="text-2xl mb-2">💬</div>
