@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import Image from 'next/image';
 
 const Hero: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -63,16 +62,14 @@ const Hero: React.FC = () => {
     <section id="home" className="min-h-screen flex items-center justify-center relative overflow-hidden" style={{ marginTop: 0, paddingTop: 0 }}>
       {/* Background Image with Overlay - Hero section only */}
       <div className="absolute inset-0 w-full h-full overflow-hidden z-0">
-        <Image
-          src="/images/IMG_2296_optimized.jpg"
-          alt="MPDEE Creative Studio Background"
-          fill
-          className="object-cover"
+        <div 
+          className="absolute inset-0 w-full h-full object-cover"
           style={{
-            objectPosition: 'center top',
+            backgroundImage: 'url(/images/IMG_2296_optimized.jpg)',
+            backgroundPosition: 'center top',
+            backgroundSize: 'cover',
             opacity: '0.25',
           }}
-          priority
         />
         <div className="absolute inset-0 bg-gradient-to-br from-white/50 to-gray-50/30"></div>
       </div>
