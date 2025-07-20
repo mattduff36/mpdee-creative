@@ -4,6 +4,8 @@ const nextConfig = {
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
   },
+  // Ensure proper static generation
+  trailingSlash: false,
 };
 
 module.exports = nextConfig; 
