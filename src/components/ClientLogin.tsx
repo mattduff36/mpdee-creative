@@ -138,7 +138,7 @@ const ClientLogin: React.FC = () => {
                   Reset Password
                 </h3>
                 <p className="text-sm text-gray-600">
-                  Enter your email address and we'll send you a reset link
+                  Enter your email address and we&apos;ll send you a reset link
                 </p>
               </div>
 

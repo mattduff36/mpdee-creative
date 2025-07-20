@@ -6,7 +6,7 @@ interface NavigationProps {
   logo?: string;
 }
 
-const Navigation = ({ logo }: NavigationProps) => {
+const Navigation = ({ }: NavigationProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('');
   const [isScrolled, setIsScrolled] = useState(false);
