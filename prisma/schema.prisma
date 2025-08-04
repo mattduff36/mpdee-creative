@@ -1,0 +1,68 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Client {
+  id              String   @id @default(cuid())
+  name            String
+  email           String   @unique
+  phone           String?
+  billing_address String?
+  notes           String?
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+
+  // Relations
+  invoices Invoice[]
+
+  @@map("clients")
+}
+
+model Invoice {
+  id             String        @id @default(cuid())
+  client_id      String
+  invoice_number String        @unique
+  status         InvoiceStatus @default(DRAFT)
+  total_amount   Float         @default(0)
+  sent_date      DateTime?
+  due_date       DateTime?
+  paid_date      DateTime?
+  created_at     DateTime      @default(now())
+  updated_at     DateTime      @updatedAt
+
+  // Relations
+  client Client        @relation(fields: [client_id], references: [id], onDelete: Cascade)
+  items  InvoiceItem[]
+
+  @@map("invoices")
+}
+
+model InvoiceItem {
+  id          String   @id @default(cuid())
+  invoice_id  String
+  description String
+  quantity    Float
+  rate        Float
+  total       Float
+  created_at  DateTime @default(now())
+
+  // Relations
+  invoice Invoice @relation(fields: [invoice_id], references: [id], onDelete: Cascade)
+
+  @@map("invoice_items")
+}
+
+enum InvoiceStatus {
+  DRAFT
+  SENT
+  PAID
+  OVERDUE
+}

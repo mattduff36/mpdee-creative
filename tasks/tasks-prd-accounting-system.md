@@ -61,13 +61,13 @@ Based on PRD: `prd-accounting-system.md`
   - [x] 2.6 Implement authentication middleware for accounts routes
   - [x] 2.7 Add logout functionality and redirect logic
 
-- [ ] 3.0 Create database schema and data layer with Prisma
-  - [ ] 3.1 Initialize Prisma in the project
-  - [ ] 3.2 Define database schema for clients, invoices, and invoice_items tables
-  - [ ] 3.3 Configure database connection for SQLite (dev) and PostgreSQL (prod)
-  - [ ] 3.4 Create and run initial database migration
-  - [ ] 3.5 Set up Prisma client and database utilities in lib/db.ts
-  - [ ] 3.6 Create TypeScript types based on Prisma schema
+- [x] 3.0 Create database schema and data layer with Prisma
+  - [x] 3.1 Initialize Prisma in the project
+  - [x] 3.2 Define database schema for clients, invoices, and invoice_items tables
+  - [x] 3.3 Configure database connection for SQLite (dev) and PostgreSQL (prod)
+  - [x] 3.4 Create and run initial database migration
+  - [x] 3.5 Set up Prisma client and database utilities in lib/db.ts
+  - [x] 3.6 Create TypeScript types based on Prisma schema
 
 - [ ] 4.0 Build client management system (CRUD operations)
   - [ ] 4.1 Create client API endpoints for CRUD operations
