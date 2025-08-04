@@ -69,14 +69,14 @@ Based on PRD: `prd-accounting-system.md`
   - [x] 3.5 Set up Prisma client and database utilities in lib/db.ts
   - [x] 3.6 Create TypeScript types based on Prisma schema
 
-- [ ] 4.0 Build client management system (CRUD operations)
-  - [ ] 4.1 Create client API endpoints for CRUD operations
-  - [ ] 4.2 Build client form component with validation
-  - [ ] 4.3 Create client listing page with search functionality
-  - [ ] 4.4 Implement client detail/edit page
-  - [ ] 4.5 Add client deletion with confirmation dialog
-  - [ ] 4.6 Implement client search and filtering
-  - [ ] 4.7 Add validation to prevent deletion of clients with invoices
+- [x] 4.0 Build client management system (CRUD operations)
+  - [x] 4.1 Create client API endpoints for CRUD operations
+  - [x] 4.2 Build client form component with validation
+  - [x] 4.3 Create client listing page with search functionality
+  - [x] 4.4 Implement client detail/edit page
+  - [x] 4.5 Add client deletion with confirmation dialog
+  - [x] 4.6 Implement client search and filtering
+  - [x] 4.7 Add validation to prevent deletion of clients with invoices
 
 - [ ] 5.0 Develop invoice management system with line items
   - [ ] 5.1 Create invoice API endpoints for CRUD operations
