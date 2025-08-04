@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Navigation from '../../../components/accounts/Navigation';
-import { InvoiceWithClient, PaginatedResponse, InvoiceStatus } from '../../../lib/types';
+import { InvoiceWithClient, PaginatedResponse, InvoiceStatus } from '../../../../lib/types';
 
 export default function InvoicesPage() {
   const [invoices, setInvoices] = useState<InvoiceWithClient[]>([]);
@@ -234,6 +234,33 @@ export default function InvoicesPage() {
                               className="text-indigo-600 hover:text-indigo-900 text-sm font-medium"
                             >
                               {invoice.status === InvoiceStatus.DRAFT ? 'Edit' : 'View'}
+                            </button>
+                            {invoice.status === InvoiceStatus.DRAFT && (
+                              <button
+                                onClick={async () => {
+                                  try {
+                                    const response = await fetch(`/api/invoices/${invoice.id}/send`, {
+                                      method: 'POST',
+                                    });
+                                    if (response.ok) {
+                                      fetchInvoices(); // Refresh list
+                                    } else {
+                                      setError('Failed to send invoice');
+                                    }
+                                  } catch (error) {
+                                    setError('Failed to send invoice');
+                                  }
+                                }}
+                                className="text-green-600 hover:text-green-900 text-sm font-medium"
+                              >
+                                Send
+                              </button>
+                            )}
+                            <button
+                              onClick={() => window.open(`/api/invoices/${invoice.id}/pdf`, '_blank')}
+                              className="text-blue-600 hover:text-blue-900 text-sm font-medium"
+                            >
+                              Download
                             </button>
                             {invoice.status === InvoiceStatus.DRAFT && (
                               <button

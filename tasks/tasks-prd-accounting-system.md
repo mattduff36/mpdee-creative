@@ -89,24 +89,24 @@ Based on PRD: `prd-accounting-system.md`
   - [x] 5.8 Add invoice total calculations and validation
   - [x] 5.9 Implement business rules (no editing sent/paid invoices)
 
-- [ ] 6.0 Implement PDF generation and email functionality
-  - [ ] 6.1 Set up PDF generation utilities with professional template
-  - [ ] 6.2 Create invoice PDF template matching MPDEE Creative branding
-  - [ ] 6.3 Configure Google SMTP with Nodemailer
-  - [ ] 6.4 Build email service for sending invoices
-  - [ ] 6.5 Create API endpoint for PDF generation
-  - [ ] 6.6 Create API endpoint for sending invoices via email
-  - [ ] 6.7 Update invoice status after successful email sending
-  - [ ] 6.8 Add error handling for email failures
+- [x] 6.0 Implement PDF generation and email functionality
+  - [x] 6.1 Set up PDF generation utilities with professional template
+  - [x] 6.2 Create invoice PDF template matching MPDEE Creative branding
+  - [x] 6.3 Configure Google SMTP with Nodemailer
+  - [x] 6.4 Build email service for sending invoices
+  - [x] 6.5 Create API endpoint for PDF generation
+  - [x] 6.6 Create API endpoint for sending invoices via email
+  - [x] 6.7 Update invoice status after successful email sending
+  - [x] 6.8 Add error handling for email failures
 
-- [ ] 7.0 Create user interface and navigation structure
-  - [ ] 7.1 Create accounts layout with authentication wrapper
-  - [ ] 7.2 Build navigation component for accounts section
-  - [ ] 7.3 Create main accounts dashboard page
-  - [ ] 7.4 Implement responsive design matching existing site
-  - [ ] 7.5 Add loading states and error handling throughout UI
-  - [ ] 7.6 Create reusable data table component
-  - [ ] 7.7 Add confirmation dialogs for destructive actions
-  - [ ] 7.8 Implement success/error toast notifications
-  - [ ] 7.9 Add form validation and error display
-  - [ ] 7.10 Test responsive design on mobile devices 
+- [x] 7.0 Create user interface and navigation structure
+  - [x] 7.1 Create accounts layout with authentication wrapper
+  - [x] 7.2 Build navigation component for accounts section
+  - [x] 7.3 Create main accounts dashboard page
+  - [x] 7.4 Implement responsive design matching existing site
+  - [x] 7.5 Add loading states and error handling throughout UI
+  - [x] 7.6 Create reusable data table component
+  - [x] 7.7 Add confirmation dialogs for destructive actions
+  - [x] 7.8 Implement success/error toast notifications
+  - [x] 7.9 Add form validation and error display
+  - [x] 7.10 Test responsive design on mobile devices 
