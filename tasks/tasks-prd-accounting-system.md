@@ -52,14 +52,14 @@ Based on PRD: `prd-accounting-system.md`
   - [x] 1.4 Create lib directory structure for utilities
   - [x] 1.5 Update next.config.js for PDF generation and file handling
 
-- [ ] 2.0 Implement authentication system with password protection
-  - [ ] 2.1 Create authentication utilities in lib/auth.ts
-  - [ ] 2.2 Implement session management with secure cookies
-  - [ ] 2.3 Create login API endpoints (/api/auth/login, /api/auth/logout)
-  - [ ] 2.4 Build login form component with validation
-  - [ ] 2.5 Create login page at /accounts/login
-  - [ ] 2.6 Implement authentication middleware for accounts routes
-  - [ ] 2.7 Add logout functionality and redirect logic
+- [x] 2.0 Implement authentication system with password protection
+  - [x] 2.1 Create authentication utilities in lib/auth.ts
+  - [x] 2.2 Implement session management with secure cookies
+  - [x] 2.3 Create login API endpoints (/api/auth/login, /api/auth/logout)
+  - [x] 2.4 Build login form component with validation
+  - [x] 2.5 Create login page at /accounts/login
+  - [x] 2.6 Implement authentication middleware for accounts routes
+  - [x] 2.7 Add logout functionality and redirect logic
 
 - [ ] 3.0 Create database schema and data layer with Prisma
   - [ ] 3.1 Initialize Prisma in the project
