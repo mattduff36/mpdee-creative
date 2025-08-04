@@ -78,16 +78,16 @@ Based on PRD: `prd-accounting-system.md`
   - [x] 4.6 Implement client search and filtering
   - [x] 4.7 Add validation to prevent deletion of clients with invoices
 
-- [ ] 5.0 Develop invoice management system with line items
-  - [ ] 5.1 Create invoice API endpoints for CRUD operations
-  - [ ] 5.2 Build invoice form component with client selection
-  - [ ] 5.3 Implement line item management (add, edit, remove)
-  - [ ] 5.4 Add automatic invoice number generation
-  - [ ] 5.5 Implement invoice status tracking (draft, sent, paid, overdue)
-  - [ ] 5.6 Create invoice listing page with filtering
-  - [ ] 5.7 Build individual invoice detail/edit page
-  - [ ] 5.8 Add invoice total calculations and validation
-  - [ ] 5.9 Implement business rules (no editing sent/paid invoices)
+- [x] 5.0 Develop invoice management system with line items
+  - [x] 5.1 Create invoice API endpoints for CRUD operations
+  - [x] 5.2 Build invoice form component with client selection
+  - [x] 5.3 Implement line item management (add, edit, remove)
+  - [x] 5.4 Add automatic invoice number generation
+  - [x] 5.5 Implement invoice status tracking (draft, sent, paid, overdue)
+  - [x] 5.6 Create invoice listing page with filtering
+  - [x] 5.7 Build individual invoice detail/edit page
+  - [x] 5.8 Add invoice total calculations and validation
+  - [x] 5.9 Implement business rules (no editing sent/paid invoices)
 
 - [ ] 6.0 Implement PDF generation and email functionality
   - [ ] 6.1 Set up PDF generation utilities with professional template
