@@ -1,14 +1,12 @@
 // PDF generation utilities for invoices
-import { pdf } from '@react-pdf/renderer';
+import React from 'react';
+import { Document, Page, Text, View, StyleSheet, pdf } from '@react-pdf/renderer';
 import { InvoicePDFData } from './types';
 
 export async function generateInvoicePDF(data: InvoicePDFData): Promise<Buffer> {
   try {
-    const { invoice, company } = data;
-    
-    // Use @react-pdf/renderer programmatic API to avoid JSX in .ts file
-    const { Document, Page, Text, View, StyleSheet } = await import('@react-pdf/renderer');
-    
+  const { invoice, company } = data;
+  
     // Create styles
     const styles = StyleSheet.create({
       page: {
@@ -161,97 +159,110 @@ export async function generateInvoicePDF(data: InvoicePDFData): Promise<Buffer> 
       },
     });
 
-    // Create document programmatically
-    const MyDocument = Document({
-      children: [
-        Page({
-          size: 'A4',
-          style: styles.page,
-          children: [
-            // Header
-            View({
-              style: styles.header,
-              children: [
-                View({
-                  style: styles.companyInfo,
-                  children: [
-                    Text({ style: styles.companyName, children: company.name }),
-                    Text({ style: styles.companyDetails, children: company.email }),
-                    ...(company.phone ? [Text({ style: styles.companyDetails, children: company.phone })] : []),
-                    ...(company.address ? [Text({ style: styles.companyDetails, children: company.address })] : []),
-                  ],
-                }),
-                View({
-                  style: styles.invoiceInfo,
-                  children: [
-                    Text({ style: styles.invoiceTitle, children: 'INVOICE' }),
-                    Text({ style: styles.invoiceNumber, children: `#${invoice.invoice_number}` }),
-                    Text({ style: styles.invoiceDetails, children: `Date: ${formatDate(invoice.created_at)}` }),
-                    ...(invoice.due_date ? [Text({ style: styles.invoiceDetails, children: `Due: ${formatDate(invoice.due_date)}` })] : []),
-                  ],
-                }),
-              ],
-            }),
-            // Client Information
-            View({
-              style: styles.clientSection,
-              children: [
-                Text({ style: styles.sectionTitle, children: 'BILL TO:' }),
-                Text({ style: styles.clientName, children: invoice.client.name }),
-                Text({ style: styles.clientDetails, children: invoice.client.email }),
-                ...(invoice.client.phone ? [Text({ style: styles.clientDetails, children: invoice.client.phone })] : []),
-                ...(invoice.client.billing_address ? [Text({ style: styles.clientDetails, children: invoice.client.billing_address })] : []),
-              ],
-            }),
-            // Items Table
-            View({
-              style: styles.table,
-              children: [
-                // Table Header
-                View({
-                  style: [styles.tableRow, styles.tableHeader],
-                  children: [
-                    View({ style: styles.tableColDesc, children: [Text({ style: styles.cellText, children: 'Description' })] }),
-                    View({ style: styles.tableColQty, children: [Text({ style: styles.cellText, children: 'Qty' })] }),
-                    View({ style: styles.tableColRate, children: [Text({ style: styles.cellText, children: 'Rate' })] }),
-                    View({ style: styles.tableColAmount, children: [Text({ style: styles.cellText, children: 'Amount' })] }),
-                  ],
-                }),
-                // Table Rows
-                ...invoice.items.map((item, index) =>
-                  View({
-                    key: index,
-                    style: [styles.tableRow, ...(index % 2 === 1 ? [styles.tableRowOdd] : [])],
-                    children: [
-                      View({ style: styles.tableColDesc, children: [Text({ style: styles.cellText, children: item.description })] }),
-                      View({ style: styles.tableColQty, children: [Text({ style: styles.cellText, children: item.quantity.toString() })] }),
-                      View({ style: styles.tableColRate, children: [Text({ style: styles.cellText, children: formatCurrency(item.rate) })] }),
-                      View({ style: styles.tableColAmount, children: [Text({ style: styles.cellText, children: formatCurrency(item.total) })] }),
-                    ],
-                  })
-                ),
-              ],
-            }),
-            // Total
-            View({
-              style: styles.totalSection,
-              children: [
-                Text({ style: styles.totalLabel, children: 'TOTAL:' }),
-                Text({ style: styles.totalAmount, children: formatCurrency(invoice.total_amount) }),
-              ],
-            }),
-            // Footer
-            View({
-              style: styles.footer,
-              children: [
-                Text({ children: 'Thank you for your business!' }),
-                ...(invoice.due_date && invoice.status === 'SENT' ? [Text({ children: `Payment is due by ${formatDate(invoice.due_date)}` })] : []),
-              ],
-            }),
-          ],
-        }),
-      ],
-    });
+    // Create document using React.createElement
+    const MyDocument = React.createElement(Document, {}, [
+      React.createElement(Page, { 
+        size: 'A4',
+        style: styles.page,
+        key: 'page1'
+      }, [
+        // Header
+        React.createElement(View, {
+          style: styles.header,
+          key: 'header'
+        }, [
+          React.createElement(View, {
+            style: styles.companyInfo,
+            key: 'company-info'
+          }, [
+            React.createElement(Text, { style: styles.companyName, key: 'company-name' }, company.name),
+            React.createElement(Text, { style: styles.companyDetails, key: 'company-email' }, company.email),
+            ...(company.phone ? [React.createElement(Text, { style: styles.companyDetails, key: 'company-phone' }, company.phone)] : []),
+            ...(company.address ? [React.createElement(Text, { style: styles.companyDetails, key: 'company-address' }, company.address)] : []),
+          ]),
+          React.createElement(View, {
+            style: styles.invoiceInfo,
+            key: 'invoice-info'
+          }, [
+            React.createElement(Text, { style: styles.invoiceTitle, key: 'invoice-title' }, 'INVOICE'),
+            React.createElement(Text, { style: styles.invoiceNumber, key: 'invoice-number' }, `#${invoice.invoice_number}`),
+            React.createElement(Text, { style: styles.invoiceDetails, key: 'invoice-date' }, `Date: ${formatDate(invoice.created_at)}`),
+            ...(invoice.due_date ? [React.createElement(Text, { style: styles.invoiceDetails, key: 'invoice-due' }, `Due: ${formatDate(invoice.due_date)}`)] : []),
+          ]),
+        ]),
+        // Client Information
+        React.createElement(View, {
+          style: styles.clientSection,
+          key: 'client-section'
+        }, [
+          React.createElement(Text, { style: styles.sectionTitle, key: 'bill-to-title' }, 'BILL TO:'),
+          React.createElement(Text, { style: styles.clientName, key: 'client-name' }, invoice.client.name),
+          React.createElement(Text, { style: styles.clientDetails, key: 'client-email' }, invoice.client.email),
+          ...(invoice.client.phone ? [React.createElement(Text, { style: styles.clientDetails, key: 'client-phone' }, invoice.client.phone)] : []),
+          ...(invoice.client.billing_address ? [React.createElement(Text, { style: styles.clientDetails, key: 'client-address' }, invoice.client.billing_address)] : []),
+        ]),
+        // Items Table
+        React.createElement(View, {
+          style: styles.table,
+          key: 'items-table'
+        }, [
+          // Table Header
+          React.createElement(View, {
+            style: [styles.tableRow, styles.tableHeader],
+            key: 'table-header'
+          }, [
+            React.createElement(View, { style: styles.tableColDesc, key: 'header-desc' }, [
+              React.createElement(Text, { style: styles.cellText, key: 'desc-text' }, 'Description')
+            ]),
+            React.createElement(View, { style: styles.tableColQty, key: 'header-qty' }, [
+              React.createElement(Text, { style: styles.cellText, key: 'qty-text' }, 'Qty')
+            ]),
+            React.createElement(View, { style: styles.tableColRate, key: 'header-rate' }, [
+              React.createElement(Text, { style: styles.cellText, key: 'rate-text' }, 'Rate')
+            ]),
+            React.createElement(View, { style: styles.tableColAmount, key: 'header-amount' }, [
+              React.createElement(Text, { style: styles.cellText, key: 'amount-text' }, 'Amount')
+            ]),
+          ]),
+          // Table Rows
+          ...invoice.items.map((item, index) =>
+            React.createElement(View, {
+              key: `row-${index}`,
+              style: [styles.tableRow, ...(index % 2 === 1 ? [styles.tableRowOdd] : [])]
+            }, [
+              React.createElement(View, { style: styles.tableColDesc, key: `desc-${index}` }, [
+                React.createElement(Text, { style: styles.cellText, key: `desc-text-${index}` }, item.description)
+              ]),
+              React.createElement(View, { style: styles.tableColQty, key: `qty-${index}` }, [
+                React.createElement(Text, { style: styles.cellText, key: `qty-text-${index}` }, item.quantity.toString())
+              ]),
+              React.createElement(View, { style: styles.tableColRate, key: `rate-${index}` }, [
+                React.createElement(Text, { style: styles.cellText, key: `rate-text-${index}` }, formatCurrency(item.rate))
+              ]),
+              React.createElement(View, { style: styles.tableColAmount, key: `amount-${index}` }, [
+                React.createElement(Text, { style: styles.cellText, key: `amount-text-${index}` }, formatCurrency(item.total))
+              ]),
+            ])
+          ),
+        ]),
+        // Total
+        React.createElement(View, {
+          style: styles.totalSection,
+          key: 'total-section'
+        }, [
+          React.createElement(Text, { style: styles.totalLabel, key: 'total-label' }, 'TOTAL:'),
+          React.createElement(Text, { style: styles.totalAmount, key: 'total-amount' }, formatCurrency(invoice.total_amount)),
+        ]),
+        // Footer
+        React.createElement(View, {
+          style: styles.footer,
+          key: 'footer'
+        }, [
+          React.createElement(Text, { key: 'footer-thanks' }, 'Thank you for your business!'),
+          ...(invoice.due_date && invoice.status === 'SENT' ? [React.createElement(Text, { key: 'footer-due' }, `Payment is due by ${formatDate(invoice.due_date)}`)] : []),
+        ]),
+      ])
+    ]);
 
     const blob = await pdf(MyDocument).toBuffer();
     return blob;
