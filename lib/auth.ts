@@ -21,13 +21,7 @@ export async function validateCredentials(credentials: LoginCredentials): Promis
     const adminUsername = process.env.ADMIN_USERNAME;
     const adminPassword = process.env.ADMIN_PASSWORD;
     
-    // Debug logging for production
-    console.log('DEBUG: Environment check:', {
-      hasUsername: !!adminUsername,
-      hasPassword: !!adminPassword,
-      nodeEnv: process.env.NODE_ENV,
-      receivedUsername: username
-    });
+
     
     if (!adminUsername || !adminPassword) {
       console.error('Admin credentials not configured in environment variables');
@@ -42,17 +36,14 @@ export async function validateCredentials(credentials: LoginCredentials): Promis
     // Simplified authentication - works in both dev and production
     // First try plain text comparison (most common case)
     if (password === adminPassword) {
-      console.log('DEBUG: Plain text password match successful');
       return true;
     }
     
     // If plain text fails, try bcrypt comparison (in case password is hashed)
     try {
       const bcryptResult = await bcrypt.compare(password, adminPassword);
-      console.log('DEBUG: Bcrypt comparison result:', bcryptResult);
       return bcryptResult;
     } catch (error) {
-      console.log('DEBUG: Bcrypt comparison failed, password mismatch');
       return false;
     }
   } catch (error) {

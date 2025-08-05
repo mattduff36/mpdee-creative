@@ -134,7 +134,7 @@ export default function AccountsDashboard() {
                   <div className="flex items-center">
                     <div className="flex-shrink-0">
                       <div className="w-8 h-8 bg-yellow-500 rounded-md flex items-center justify-center">
-                        <span className="text-white text-sm font-medium">$</span>
+                        <span className="text-white text-sm font-medium">£</span>
                       </div>
                     </div>
                     <div className="ml-5 w-0 flex-1">
@@ -143,7 +143,7 @@ export default function AccountsDashboard() {
                           Outstanding Amount
                         </dt>
                         <dd className="text-lg font-medium text-gray-900">
-                          $0.00
+                          £0.00
                         </dd>
                       </dl>
                     </div>
