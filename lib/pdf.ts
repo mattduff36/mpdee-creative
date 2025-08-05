@@ -1,5 +1,6 @@
 // PDF generation utilities for invoices
 import { InvoicePDFData } from './types';
+import puppeteer from 'puppeteer';
 
 export async function generateInvoicePDF(data: InvoicePDFData): Promise<Buffer> {
   const { invoice, company } = data;
@@ -176,10 +177,45 @@ export async function generateInvoicePDF(data: InvoicePDFData): Promise<Buffer> 
     </html>
   `;
 
-  // For now, we'll return the HTML as a buffer
-  // In a production environment, you would use a library like puppeteer or playwright
-  // to convert HTML to PDF, but for simplicity, we'll return HTML
-  return Buffer.from(html, 'utf-8');
+  // Use Puppeteer to convert HTML to PDF
+  let browser;
+  try {
+    // Launch browser in headless mode
+    browser = await puppeteer.launch({
+      headless: true,
+      args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',
+        '--disable-accelerated-2d-canvas',
+        '--no-first-run',
+        '--no-zygote',
+        '--single-process', // For serverless environments
+        '--disable-gpu'
+      ]
+    });
+
+    const page = await browser.newPage();
+    await page.setContent(html, { waitUntil: 'networkidle0' });
+
+    // Generate PDF with professional settings
+    const pdfBuffer = await page.pdf({
+      format: 'A4',
+      printBackground: true,
+      margin: {
+        top: '20mm',
+        right: '15mm',
+        bottom: '20mm',
+        left: '15mm',
+      },
+    });
+
+    return Buffer.from(pdfBuffer);
+  } finally {
+    if (browser) {
+      await browser.close();
+    }
+  }
 }
 
 export function formatCurrency(amount: number): string {

@@ -42,11 +42,11 @@ export async function GET(
     });
 
     // Return PDF as response
-    return new NextResponse(pdfBuffer.toString('utf-8'), {
+    return new NextResponse(pdfBuffer, {
       status: 200,
       headers: {
-        'Content-Type': 'text/html',
-        'Content-Disposition': `attachment; filename="invoice-${invoice.invoice_number}.html"`,
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': `attachment; filename="invoice-${invoice.invoice_number}.pdf"`,
       },
     });
   } catch (error: any) {
