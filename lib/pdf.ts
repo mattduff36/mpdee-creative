@@ -1,166 +1,264 @@
 // PDF generation utilities for invoices
-import PDFDocument from 'pdfkit';
+import React from 'react';
+import { Document, Page, Text, View, StyleSheet, pdf } from '@react-pdf/renderer';
 import { InvoicePDFData } from './types';
 
-export async function generateInvoicePDF(data: InvoicePDFData): Promise<Buffer> {
+// Create styles
+const styles = StyleSheet.create({
+  page: {
+    flexDirection: 'column',
+    backgroundColor: '#FFFFFF',
+    padding: 30,
+    fontFamily: 'Helvetica',
+    fontSize: 10,
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 30,
+    paddingBottom: 15,
+    borderBottomWidth: 2,
+    borderBottomColor: '#4f46e5',
+  },
+  companyInfo: {
+    flex: 1,
+  },
+  companyName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#4f46e5',
+    marginBottom: 8,
+  },
+  companyDetails: {
+    fontSize: 9,
+    color: '#333333',
+    lineHeight: 1.3,
+  },
+  invoiceInfo: {
+    textAlign: 'right',
+    flex: 1,
+  },
+  invoiceTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#4f46e5',
+    marginBottom: 8,
+  },
+  invoiceNumber: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  invoiceDetails: {
+    fontSize: 9,
+    color: '#333333',
+  },
+  clientSection: {
+    marginBottom: 25,
+  },
+  sectionTitle: {
+    fontSize: 11,
+    fontWeight: 'bold',
+    color: '#4f46e5',
+    marginBottom: 8,
+    textTransform: 'uppercase',
+  },
+  clientName: {
+    fontSize: 11,
+    fontWeight: 'bold',
+    marginBottom: 4,
+  },
+  clientDetails: {
+    fontSize: 9,
+    color: '#333333',
+    lineHeight: 1.3,
+  },
+  table: {
+    display: 'table',
+    width: 'auto',
+    borderStyle: 'solid',
+    borderWidth: 0,
+    marginBottom: 20,
+  },
+  tableRow: {
+    margin: 'auto',
+    flexDirection: 'row',
+  },
+  tableHeader: {
+    backgroundColor: '#4f46e5',
+    color: '#FFFFFF',
+    fontWeight: 'bold',
+    fontSize: 9,
+  },
+  tableRowOdd: {
+    backgroundColor: '#f9fafb',
+  },
+  tableColDesc: {
+    width: '50%',
+    borderStyle: 'solid',
+    borderWidth: 0,
+    borderRightWidth: 0,
+    padding: 8,
+  },
+  tableColQty: {
+    width: '15%',
+    borderStyle: 'solid',
+    borderWidth: 0,
+    borderRightWidth: 0,
+    padding: 8,
+    textAlign: 'right',
+  },
+  tableColRate: {
+    width: '17.5%',
+    borderStyle: 'solid',
+    borderWidth: 0,
+    borderRightWidth: 0,
+    padding: 8,
+    textAlign: 'right',
+  },
+  tableColAmount: {
+    width: '17.5%',
+    borderStyle: 'solid',
+    borderWidth: 0,
+    padding: 8,
+    textAlign: 'right',
+  },
+  cellText: {
+    fontSize: 9,
+  },
+  totalSection: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginTop: 15,
+  },
+  totalLabel: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    marginRight: 15,
+  },
+  totalAmount: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#4f46e5',
+    minWidth: 80,
+    textAlign: 'right',
+  },
+  footer: {
+    marginTop: 40,
+    paddingTop: 15,
+    borderTopWidth: 1,
+    borderTopColor: '#e5e7eb',
+    textAlign: 'center',
+    color: '#6b7280',
+    fontSize: 8,
+  },
+});
+
+// PDF Document Component
+const InvoicePDF: React.FC<{ data: InvoicePDFData }> = ({ data }) => {
   const { invoice, company } = data;
-  
-  return new Promise((resolve, reject) => {
-    try {
-      // Create a new PDF document
-      const doc = new PDFDocument({ 
-        size: 'A4',
-        margin: 50,
-        info: {
-          Title: `Invoice ${invoice.invoice_number}`,
-          Author: company.name,
-          Subject: `Invoice for ${invoice.client.name}`,
-        }
-      });
 
-      // Create buffer to collect PDF data
-      const chunks: Buffer[] = [];
-      doc.on('data', (chunk) => chunks.push(chunk));
-      doc.on('end', () => resolve(Buffer.concat(chunks)));
-      doc.on('error', reject);
+  return (
+    <Document>
+      <Page size="A4" style={styles.page}>
+        {/* Header */}
+        <View style={styles.header}>
+          <View style={styles.companyInfo}>
+            <Text style={styles.companyName}>{company.name}</Text>
+            <Text style={styles.companyDetails}>{company.email}</Text>
+            {company.phone && <Text style={styles.companyDetails}>{company.phone}</Text>}
+            {company.address && <Text style={styles.companyDetails}>{company.address}</Text>}
+          </View>
+          <View style={styles.invoiceInfo}>
+            <Text style={styles.invoiceTitle}>INVOICE</Text>
+            <Text style={styles.invoiceNumber}>#{invoice.invoice_number}</Text>
+            <Text style={styles.invoiceDetails}>Date: {formatDate(invoice.created_at)}</Text>
+            {invoice.due_date && (
+              <Text style={styles.invoiceDetails}>Due: {formatDate(invoice.due_date)}</Text>
+            )}
+          </View>
+        </View>
 
-      // Brand color
-      const brandColor = '#4f46e5';
+        {/* Client Information */}
+        <View style={styles.clientSection}>
+          <Text style={styles.sectionTitle}>BILL TO:</Text>
+          <Text style={styles.clientName}>{invoice.client.name}</Text>
+          <Text style={styles.clientDetails}>{invoice.client.email}</Text>
+          {invoice.client.phone && (
+            <Text style={styles.clientDetails}>{invoice.client.phone}</Text>
+          )}
+          {invoice.client.billing_address && (
+            <Text style={styles.clientDetails}>{invoice.client.billing_address}</Text>
+          )}
+        </View>
 
-      // Header Section
-      doc.fontSize(24)
-         .fillColor(brandColor)
-         .text(company.name, 50, 50);
+        {/* Items Table */}
+        <View style={styles.table}>
+          {/* Table Header */}
+          <View style={[styles.tableRow, styles.tableHeader]}>
+            <View style={styles.tableColDesc}>
+              <Text style={styles.cellText}>Description</Text>
+            </View>
+            <View style={styles.tableColQty}>
+              <Text style={styles.cellText}>Qty</Text>
+            </View>
+            <View style={styles.tableColRate}>
+              <Text style={styles.cellText}>Rate</Text>
+            </View>
+            <View style={styles.tableColAmount}>
+              <Text style={styles.cellText}>Amount</Text>
+            </View>
+          </View>
 
-      doc.fontSize(10)
-         .fillColor('#333333')
-         .text(company.email, 50, 85);
+          {/* Table Rows */}
+          {invoice.items.map((item, index) => (
+            <View 
+              key={index} 
+              style={[styles.tableRow, index % 2 === 1 ? styles.tableRowOdd : null]}
+            >
+              <View style={styles.tableColDesc}>
+                <Text style={styles.cellText}>{item.description}</Text>
+              </View>
+              <View style={styles.tableColQty}>
+                <Text style={styles.cellText}>{item.quantity}</Text>
+              </View>
+              <View style={styles.tableColRate}>
+                <Text style={styles.cellText}>{formatCurrency(item.rate)}</Text>
+              </View>
+              <View style={styles.tableColAmount}>
+                <Text style={styles.cellText}>{formatCurrency(item.total)}</Text>
+              </View>
+            </View>
+          ))}
+        </View>
 
-      if (company.phone) {
-        doc.text(company.phone, 50, 100);
-      }
-      if (company.address) {
-        doc.text(company.address, 50, 115);
-      }
+        {/* Total */}
+        <View style={styles.totalSection}>
+          <Text style={styles.totalLabel}>TOTAL:</Text>
+          <Text style={styles.totalAmount}>{formatCurrency(invoice.total_amount)}</Text>
+        </View>
 
-      // Invoice Title and Info (Right side)
-      doc.fontSize(32)
-         .fillColor(brandColor)
-         .text('INVOICE', 400, 50, { align: 'right' });
+        {/* Footer */}
+        <View style={styles.footer}>
+          <Text>Thank you for your business!</Text>
+          {invoice.due_date && invoice.status === 'SENT' && (
+            <Text>Payment is due by {formatDate(invoice.due_date)}</Text>
+          )}
+        </View>
+      </Page>
+    </Document>
+  );
+};
 
-      doc.fontSize(16)
-         .fillColor('#333333')
-         .text(`#${invoice.invoice_number}`, 400, 90, { align: 'right' });
-
-      doc.fontSize(10)
-         .text(`Date: ${formatDate(invoice.created_at)}`, 400, 115, { align: 'right' });
-
-      if (invoice.due_date) {
-        doc.text(`Due: ${formatDate(invoice.due_date)}`, 400, 130, { align: 'right' });
-      }
-
-      // Horizontal line
-      doc.strokeColor(brandColor)
-         .lineWidth(2)
-         .moveTo(50, 160)
-         .lineTo(545, 160)
-         .stroke();
-
-      // Bill To Section
-      let yPos = 190;
-      doc.fontSize(12)
-         .fillColor(brandColor)
-         .text('BILL TO:', 50, yPos);
-
-      yPos += 20;
-      doc.fontSize(12)
-         .fillColor('#333333')
-         .font('Helvetica-Bold')
-         .text(invoice.client.name, 50, yPos);
-
-      yPos += 15;
-      doc.font('Helvetica')
-         .text(invoice.client.email, 50, yPos);
-
-      if (invoice.client.phone) {
-        yPos += 15;
-        doc.text(invoice.client.phone, 50, yPos);
-      }
-
-      if (invoice.client.billing_address) {
-        yPos += 15;
-        const addressLines = invoice.client.billing_address.split('\n');
-        addressLines.forEach((line) => {
-          doc.text(line, 50, yPos);
-          yPos += 15;
-        });
-      }
-
-      // Items Table
-      yPos += 30;
-      const tableTop = yPos;
-
-      // Table headers
-      doc.fontSize(10)
-         .fillColor('white')
-         .rect(50, tableTop, 495, 25)
-         .fill(brandColor);
-
-      doc.fillColor('white')
-         .text('Description', 60, tableTop + 8)
-         .text('Qty', 300, tableTop + 8, { width: 50, align: 'right' })
-         .text('Rate', 370, tableTop + 8, { width: 80, align: 'right' })
-         .text('Amount', 470, tableTop + 8, { width: 80, align: 'right' });
-
-      // Table rows
-      yPos = tableTop + 25;
-      doc.fillColor('#333333');
-
-      invoice.items.forEach((item, index) => {
-        const rowHeight = 25;
-        
-        // Alternate row colors
-        if (index % 2 === 1) {
-          doc.rect(50, yPos, 495, rowHeight)
-             .fill('#f9fafb');
-        }
-
-        doc.fillColor('#333333')
-           .text(item.description, 60, yPos + 8, { width: 230 })
-           .text(item.quantity.toString(), 300, yPos + 8, { width: 50, align: 'right' })
-           .text(formatCurrency(item.rate), 370, yPos + 8, { width: 80, align: 'right' })
-           .text(formatCurrency(item.total), 470, yPos + 8, { width: 80, align: 'right' });
-
-        yPos += rowHeight;
-      });
-
-      // Total section
-      yPos += 20;
-      doc.fontSize(14)
-         .font('Helvetica-Bold')
-         .fillColor(brandColor)
-         .text('TOTAL:', 370, yPos, { width: 80, align: 'right' })
-         .text(formatCurrency(invoice.total_amount), 470, yPos, { width: 80, align: 'right' });
-
-      // Footer
-      yPos += 60;
-      doc.fontSize(10)
-         .fillColor('#6b7280')
-         .font('Helvetica')
-         .text('Thank you for your business!', 50, yPos, { align: 'center', width: 495 });
-
-      if (invoice.due_date && invoice.status === 'SENT') {
-        yPos += 15;
-        doc.text(`Payment is due by ${formatDate(invoice.due_date)}`, 50, yPos, { align: 'center', width: 495 });
-      }
-
-      // Finalize the PDF
-      doc.end();
-
-    } catch (error) {
-      reject(error);
-    }
-  });
+export async function generateInvoicePDF(data: InvoicePDFData): Promise<Buffer> {
+  try {
+    const blob = await pdf(<InvoicePDF data={data} />).toBuffer();
+    return blob;
+  } catch (error) {
+    console.error('Error generating PDF:', error);
+    throw error;
+  }
 }
 
 export function formatCurrency(amount: number): string {
