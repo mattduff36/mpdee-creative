@@ -22,7 +22,7 @@ export const metadata: Metadata = {
         alt: 'MPDEE Creative - Professional Audio Production Services',
       },
     ],
-    locale: 'en_US',
+    locale: 'en_GB',
   },
   twitter: {
     card: 'summary_large_image',

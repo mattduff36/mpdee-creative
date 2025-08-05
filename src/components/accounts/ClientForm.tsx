@@ -136,7 +136,7 @@ export default function ClientForm({ client, onSuccess, onCancel }: ClientFormPr
                 name="email"
                 required
                 className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                placeholder="client@example.com"
+                placeholder="client@example.co.uk"
                 value={formData.email}
                 onChange={handleChange}
                 disabled={isLoading}
@@ -153,7 +153,7 @@ export default function ClientForm({ client, onSuccess, onCancel }: ClientFormPr
               id="phone"
               name="phone"
               className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              placeholder="(555) 123-4567"
+              placeholder="07700 900123"
               value={formData.phone}
               onChange={handleChange}
               disabled={isLoading}
@@ -169,7 +169,7 @@ export default function ClientForm({ client, onSuccess, onCancel }: ClientFormPr
               name="billing_address"
               rows={3}
               className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              placeholder="Enter billing address..."
+              placeholder="123 High Street&#10;London&#10;SW1A 1AA"
               value={formData.billing_address}
               onChange={handleChange}
               disabled={isLoading}

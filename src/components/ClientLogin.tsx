@@ -81,7 +81,7 @@ const ClientLogin: React.FC = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                  placeholder="your.email@example.com"
+                  placeholder="your.email@example.co.uk"
                   required
                   disabled={isLoading}
                 />
@@ -152,7 +152,7 @@ const ClientLogin: React.FC = () => {
                   value={resetEmail}
                   onChange={(e) => setResetEmail(e.target.value)}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                  placeholder="your.email@example.com"
+                  placeholder="your.email@example.co.uk"
                   required
                   disabled={isLoading}
                 />
