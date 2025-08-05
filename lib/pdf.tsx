@@ -2,7 +2,7 @@
 import { jsPDF } from 'jspdf';
 import { InvoicePDFData } from './types';
 
-export async function generateInvoicePDF(data: InvoicePDFData): Promise<Buffer> {
+export async function generateInvoicePDF(data: InvoicePDFData): Promise<ArrayBuffer> {
   try {
     const { invoice, company } = data;
 
@@ -142,10 +142,8 @@ export async function generateInvoicePDF(data: InvoicePDFData): Promise<Buffer> 
       doc.text(`Payment is due by ${formatDate(invoice.due_date)}`, 105, yPos, { align: 'center' });
     }
 
-    // Convert to buffer
-    const pdfBuffer = Buffer.from(doc.output('arraybuffer'));
-    
-    return pdfBuffer;
+    // Return ArrayBuffer directly for NextResponse compatibility
+    return doc.output('arraybuffer');
   } catch (error) {
     console.error('Error in generateInvoicePDF:', error);
     throw error;

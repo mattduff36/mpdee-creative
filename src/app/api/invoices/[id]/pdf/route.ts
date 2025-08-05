@@ -30,8 +30,8 @@ export async function GET(
       );
     }
 
-    // Generate actual PDF buffer
-    const pdfBuffer = await generateInvoicePDF({
+    // Generate actual PDF ArrayBuffer
+    const pdfArrayBuffer = await generateInvoicePDF({
       invoice,
       company: {
         name: process.env.COMPANY_NAME || 'MPDEE Creative',
@@ -42,12 +42,12 @@ export async function GET(
     });
 
     // Return PDF file for direct download
-    return new NextResponse(pdfBuffer, {
+    return new NextResponse(pdfArrayBuffer, {
       status: 200,
       headers: {
         'Content-Type': 'application/pdf',
         'Content-Disposition': `attachment; filename="invoice-${invoice.invoice_number}.pdf"`,
-        'Content-Length': pdfBuffer.length.toString(),
+        'Content-Length': pdfArrayBuffer.byteLength.toString(),
         'Cache-Control': 'no-cache',
       },
     });
