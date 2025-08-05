@@ -30,8 +30,8 @@ export async function GET(
       );
     }
 
-    // Generate PDF
-    const pdfBuffer = await generateInvoicePDF({
+    // Generate HTML for PDF
+    const htmlContent = await generateInvoicePDF({
       invoice,
       company: {
         name: process.env.COMPANY_NAME || 'MPDEE Creative',
@@ -41,12 +41,27 @@ export async function GET(
       },
     });
 
-    // Return PDF as response
-    return new NextResponse(pdfBuffer as any, {
+    // Add auto-print script for PDF conversion
+    const htmlWithScript = htmlContent.replace(
+      '</head>',
+      `
+        <script>
+          window.onload = function() {
+            // Auto-trigger print dialog for PDF saving
+            setTimeout(() => {
+              window.print();
+            }, 500);
+          };
+        </script>
+      </head>`
+    );
+
+    // Return HTML that will auto-trigger PDF print dialog
+    return new NextResponse(htmlWithScript, {
       status: 200,
       headers: {
-        'Content-Type': 'application/pdf',
-        'Content-Disposition': `attachment; filename="invoice-${invoice.invoice_number}.pdf"`,
+        'Content-Type': 'text/html; charset=utf-8',
+        'Cache-Control': 'no-cache',
       },
     });
   } catch (error: any) {
