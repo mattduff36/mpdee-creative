@@ -21,6 +21,14 @@ export async function validateCredentials(credentials: LoginCredentials): Promis
     const adminUsername = process.env.ADMIN_USERNAME;
     const adminPassword = process.env.ADMIN_PASSWORD;
     
+    // Debug logging for production
+    console.log('DEBUG: Environment check:', {
+      hasUsername: !!adminUsername,
+      hasPassword: !!adminPassword,
+      nodeEnv: process.env.NODE_ENV,
+      receivedUsername: username
+    });
+    
     if (!adminUsername || !adminPassword) {
       console.error('Admin credentials not configured in environment variables');
       return false;
