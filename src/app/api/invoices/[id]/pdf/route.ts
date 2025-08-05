@@ -41,23 +41,70 @@ export async function GET(
       },
     });
 
-    // Add auto-print script for PDF conversion
-    const htmlWithScript = htmlContent.replace(
+    // Add user-controlled print button
+    const htmlWithPrintButton = htmlContent.replace(
       '</head>',
       `
+        <style>
+          .print-controls {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border: 1px solid #e5e7eb;
+          }
+          .print-btn {
+            background: #4f46e5;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-right: 10px;
+          }
+          .print-btn:hover {
+            background: #3730a3;
+          }
+          .close-btn {
+            background: #6b7280;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+          }
+          .close-btn:hover {
+            background: #4b5563;
+          }
+          @media print {
+            .print-controls { display: none; }
+          }
+        </style>
         <script>
-          window.onload = function() {
-            // Auto-trigger print dialog for PDF saving
-            setTimeout(() => {
-              window.print();
-            }, 500);
-          };
+          function printInvoice() {
+            window.print();
+          }
+          function closeWindow() {
+            window.close();
+          }
         </script>
       </head>`
+    ).replace(
+      '<body>',
+      `<body>
+        <div class="print-controls">
+          <button class="print-btn" onclick="printInvoice()">📄 Save as PDF</button>
+          <button class="close-btn" onclick="closeWindow()">✕ Close</button>
+        </div>`
     );
 
-    // Return HTML that will auto-trigger PDF print dialog
-    return new NextResponse(htmlWithScript, {
+    // Return clean HTML with print controls
+    return new NextResponse(htmlWithPrintButton, {
       status: 200,
       headers: {
         'Content-Type': 'text/html; charset=utf-8',
