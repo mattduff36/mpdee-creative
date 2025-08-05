@@ -1,260 +1,153 @@
-// PDF generation utilities for invoices
-import React from 'react';
-import { Document, Page, Text, View, StyleSheet, pdf } from '@react-pdf/renderer';
+// PDF generation utilities for invoices using jsPDF
+import { jsPDF } from 'jspdf';
 import { InvoicePDFData } from './types';
 
 export async function generateInvoicePDF(data: InvoicePDFData): Promise<Buffer> {
   try {
-  const { invoice, company } = data;
-  
-    // Create styles
-    const styles = StyleSheet.create({
-      page: {
-        flexDirection: 'column',
-        backgroundColor: '#FFFFFF',
-        padding: 30,
-        fontFamily: 'Helvetica',
-        fontSize: 10,
-      },
-      header: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'flex-start',
-        marginBottom: 30,
-        paddingBottom: 15,
-        borderBottomWidth: 2,
-        borderBottomColor: '#4f46e5',
-      },
-      companyInfo: {
-        flex: 1,
-      },
-      companyName: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: '#4f46e5',
-        marginBottom: 8,
-      },
-      companyDetails: {
-        fontSize: 9,
-        color: '#333333',
-        lineHeight: 1.3,
-      },
-      invoiceInfo: {
-        textAlign: 'right',
-        flex: 1,
-      },
-      invoiceTitle: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: '#4f46e5',
-        marginBottom: 8,
-      },
-      invoiceNumber: {
-        fontSize: 14,
-        fontWeight: 'bold',
-        marginBottom: 5,
-      },
-      invoiceDetails: {
-        fontSize: 9,
-        color: '#333333',
-      },
-      clientSection: {
-        marginBottom: 25,
-      },
-      sectionTitle: {
-        fontSize: 11,
-        fontWeight: 'bold',
-        color: '#4f46e5',
-        marginBottom: 8,
-        textTransform: 'uppercase',
-      },
-      clientName: {
-        fontSize: 11,
-        fontWeight: 'bold',
-        marginBottom: 4,
-      },
-      clientDetails: {
-        fontSize: 9,
-        color: '#333333',
-        lineHeight: 1.3,
-      },
-      table: {
-        display: 'table',
-        width: 'auto',
-        borderStyle: 'solid',
-        borderWidth: 0,
-        marginBottom: 20,
-      },
-      tableRow: {
-        margin: 'auto',
-        flexDirection: 'row',
-      },
-      tableHeader: {
-        backgroundColor: '#4f46e5',
-        color: '#FFFFFF',
-        fontWeight: 'bold',
-        fontSize: 9,
-      },
-      tableRowOdd: {
-        backgroundColor: '#f9fafb',
-      },
-      tableColDesc: {
-        width: '50%',
-        borderStyle: 'solid',
-        borderWidth: 0,
-        borderRightWidth: 0,
-        padding: 8,
-      },
-      tableColQty: {
-        width: '15%',
-        borderStyle: 'solid',
-        borderWidth: 0,
-        borderRightWidth: 0,
-        padding: 8,
-        textAlign: 'right',
-      },
-      tableColRate: {
-        width: '17.5%',
-        borderStyle: 'solid',
-        borderWidth: 0,
-        borderRightWidth: 0,
-        padding: 8,
-        textAlign: 'right',
-      },
-      tableColAmount: {
-        width: '17.5%',
-        borderStyle: 'solid',
-        borderWidth: 0,
-        padding: 8,
-        textAlign: 'right',
-      },
-      cellText: {
-        fontSize: 9,
-      },
-      totalSection: {
-        flexDirection: 'row',
-        justifyContent: 'flex-end',
-        marginTop: 15,
-      },
-      totalLabel: {
-        fontSize: 12,
-        fontWeight: 'bold',
-        marginRight: 15,
-      },
-      totalAmount: {
-        fontSize: 14,
-        fontWeight: 'bold',
-        color: '#4f46e5',
-        minWidth: 80,
-        textAlign: 'right',
-      },
-      footer: {
-        marginTop: 40,
-        paddingTop: 15,
-        borderTopWidth: 1,
-        borderTopColor: '#e5e7eb',
-        textAlign: 'center',
-        color: '#6b7280',
-        fontSize: 8,
-      },
+    const { invoice, company } = data;
+
+    // Create new PDF document
+    const doc = new jsPDF();
+    
+    // Brand color (convert hex to RGB)
+    const brandColor = [79, 70, 229]; // #4f46e5
+    const blackColor = [0, 0, 0];
+    const grayColor = [107, 114, 128]; // #6b7280
+
+    let yPos = 20;
+
+    // Header - Company name
+    doc.setFontSize(18);
+    doc.setTextColor(...brandColor);
+    doc.text(company.name, 20, yPos);
+    yPos += 10;
+
+    // Company details
+    doc.setFontSize(10);
+    doc.setTextColor(...blackColor);
+    doc.text(company.email, 20, yPos);
+    yPos += 5;
+    
+    if (company.phone) {
+      doc.text(company.phone, 20, yPos);
+      yPos += 5;
+    }
+    
+    if (company.address) {
+      const addressLines = company.address.split('\n');
+      addressLines.forEach((line) => {
+        doc.text(line, 20, yPos);
+        yPos += 5;
+      });
+    }
+
+    // Invoice title and number (right side)
+    doc.setFontSize(24);
+    doc.setTextColor(...brandColor);
+    doc.text('INVOICE', 150, 20, { align: 'right' });
+    
+    doc.setFontSize(14);
+    doc.setTextColor(...blackColor);
+    doc.text(`#${invoice.invoice_number}`, 150, 35, { align: 'right' });
+    
+    doc.setFontSize(10);
+    doc.text(`Date: ${formatDate(invoice.created_at)}`, 150, 45, { align: 'right' });
+    
+    if (invoice.due_date) {
+      doc.text(`Due: ${formatDate(invoice.due_date)}`, 150, 52, { align: 'right' });
+    }
+
+    // Horizontal line
+    yPos = 65;
+    doc.setDrawColor(...brandColor);
+    doc.setLineWidth(1);
+    doc.line(20, yPos, 190, yPos);
+    yPos += 15;
+
+    // Bill To section
+    doc.setFontSize(12);
+    doc.setTextColor(...brandColor);
+    doc.text('BILL TO:', 20, yPos);
+    yPos += 8;
+
+    doc.setFontSize(11);
+    doc.setTextColor(...blackColor);
+    doc.text(invoice.client.name, 20, yPos);
+    yPos += 6;
+
+    doc.setFontSize(9);
+    doc.text(invoice.client.email, 20, yPos);
+    yPos += 5;
+
+    if (invoice.client.phone) {
+      doc.text(invoice.client.phone, 20, yPos);
+      yPos += 5;
+    }
+
+    if (invoice.client.billing_address) {
+      const clientAddressLines = invoice.client.billing_address.split('\n');
+      clientAddressLines.forEach((line) => {
+        doc.text(line, 20, yPos);
+        yPos += 5;
+      });
+    }
+
+    yPos += 10;
+
+    // Items table header
+    doc.setFillColor(...brandColor);
+    doc.rect(20, yPos, 170, 8, 'F');
+    
+    doc.setFontSize(9);
+    doc.setTextColor(255, 255, 255);
+    doc.text('Description', 22, yPos + 5);
+    doc.text('Qty', 120, yPos + 5, { align: 'right' });
+    doc.text('Rate', 140, yPos + 5, { align: 'right' });
+    doc.text('Amount', 185, yPos + 5, { align: 'right' });
+    yPos += 8;
+
+    // Items table rows
+    doc.setTextColor(...blackColor);
+    invoice.items.forEach((item, index) => {
+      if (index % 2 === 1) {
+        doc.setFillColor(249, 250, 251); // Light gray for alternating rows
+        doc.rect(20, yPos, 170, 6, 'F');
+      }
+      
+      doc.text(item.description, 22, yPos + 4);
+      doc.text(item.quantity.toString(), 120, yPos + 4, { align: 'right' });
+      doc.text(formatCurrency(item.rate), 140, yPos + 4, { align: 'right' });
+      doc.text(formatCurrency(item.total), 185, yPos + 4, { align: 'right' });
+      yPos += 6;
     });
 
-    // Create PDF document using JSX
-    const MyDocument = (
-      <Document>
-        <Page size="A4" style={styles.page}>
-          {/* Header */}
-          <View style={styles.header}>
-            <View style={styles.companyInfo}>
-              <Text style={styles.companyName}>{company.name}</Text>
-              <Text style={styles.companyDetails}>{company.email}</Text>
-              {company.phone && <Text style={styles.companyDetails}>{company.phone}</Text>}
-              {company.address && <Text style={styles.companyDetails}>{company.address}</Text>}
-            </View>
-            <View style={styles.invoiceInfo}>
-              <Text style={styles.invoiceTitle}>INVOICE</Text>
-              <Text style={styles.invoiceNumber}>#{invoice.invoice_number}</Text>
-              <Text style={styles.invoiceDetails}>Date: {formatDate(invoice.created_at)}</Text>
-              {invoice.due_date && (
-                <Text style={styles.invoiceDetails}>Due: {formatDate(invoice.due_date)}</Text>
-              )}
-            </View>
-          </View>
+    yPos += 10;
 
-          {/* Client Information */}
-          <View style={styles.clientSection}>
-            <Text style={styles.sectionTitle}>BILL TO:</Text>
-            <Text style={styles.clientName}>{invoice.client.name}</Text>
-            <Text style={styles.clientDetails}>{invoice.client.email}</Text>
-            {invoice.client.phone && (
-              <Text style={styles.clientDetails}>{invoice.client.phone}</Text>
-            )}
-            {invoice.client.billing_address && (
-              <Text style={styles.clientDetails}>{invoice.client.billing_address}</Text>
-            )}
-          </View>
+    // Total
+    doc.setFontSize(12);
+    doc.setTextColor(...brandColor);
+    doc.text('TOTAL:', 140, yPos, { align: 'right' });
+    doc.setFontSize(14);
+    doc.text(formatCurrency(invoice.total_amount), 185, yPos, { align: 'right' });
 
-          {/* Items Table */}
-          <View style={styles.table}>
-            {/* Table Header */}
-            <View style={[styles.tableRow, styles.tableHeader]}>
-              <View style={styles.tableColDesc}>
-                <Text style={styles.cellText}>Description</Text>
-              </View>
-              <View style={styles.tableColQty}>
-                <Text style={styles.cellText}>Qty</Text>
-              </View>
-              <View style={styles.tableColRate}>
-                <Text style={styles.cellText}>Rate</Text>
-              </View>
-              <View style={styles.tableColAmount}>
-                <Text style={styles.cellText}>Amount</Text>
-              </View>
-            </View>
+    yPos += 20;
 
-            {/* Table Rows */}
-            {invoice.items.map((item, index) => (
-              <View 
-                key={index} 
-                style={[styles.tableRow, index % 2 === 1 ? styles.tableRowOdd : null]}
-              >
-                <View style={styles.tableColDesc}>
-                  <Text style={styles.cellText}>{item.description}</Text>
-                </View>
-                <View style={styles.tableColQty}>
-                  <Text style={styles.cellText}>{item.quantity}</Text>
-                </View>
-                <View style={styles.tableColRate}>
-                  <Text style={styles.cellText}>{formatCurrency(item.rate)}</Text>
-                </View>
-                <View style={styles.tableColAmount}>
-                  <Text style={styles.cellText}>{formatCurrency(item.total)}</Text>
-                </View>
-              </View>
-            ))}
-          </View>
+    // Footer
+    doc.setFontSize(10);
+    doc.setTextColor(...grayColor);
+    doc.text('Thank you for your business!', 105, yPos, { align: 'center' });
+    
+    if (invoice.due_date && invoice.status === 'SENT') {
+      yPos += 6;
+      doc.text(`Payment is due by ${formatDate(invoice.due_date)}`, 105, yPos, { align: 'center' });
+    }
 
-          {/* Total */}
-          <View style={styles.totalSection}>
-            <Text style={styles.totalLabel}>TOTAL:</Text>
-            <Text style={styles.totalAmount}>{formatCurrency(invoice.total_amount)}</Text>
-          </View>
-
-          {/* Footer */}
-          <View style={styles.footer}>
-            <Text>Thank you for your business!</Text>
-            {invoice.due_date && invoice.status === 'SENT' && (
-              <Text>Payment is due by {formatDate(invoice.due_date)}</Text>
-            )}
-          </View>
-        </Page>
-      </Document>
-    );
-
-    const blob = await pdf(MyDocument).toBuffer();
-    return blob;
+    // Convert to buffer
+    const pdfBuffer = Buffer.from(doc.output('arraybuffer'));
+    
+    return pdfBuffer;
   } catch (error) {
-    console.error('Error generating PDF:', error);
+    console.error('Error in generateInvoicePDF:', error);
     throw error;
   }
 }

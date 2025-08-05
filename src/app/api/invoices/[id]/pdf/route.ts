@@ -62,7 +62,7 @@ export async function GET(
     }
 
     return NextResponse.json(
-      { success: false, error: 'Failed to generate PDF' },
+      { success: false, error: 'Failed to generate PDF', details: error.message },
       { status: 500 }
     );
   }
