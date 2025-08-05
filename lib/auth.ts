@@ -39,19 +39,21 @@ export async function validateCredentials(credentials: LoginCredentials): Promis
       return false;
     }
     
-    // For development, allow plain text password comparison
-    // In production, you should hash the password in the environment variable
-    if (process.env.NODE_ENV === 'development') {
-      return password === adminPassword;
+    // Simplified authentication - works in both dev and production
+    // First try plain text comparison (most common case)
+    if (password === adminPassword) {
+      console.log('DEBUG: Plain text password match successful');
+      return true;
     }
     
-    // For production, compare with hashed password
+    // If plain text fails, try bcrypt comparison (in case password is hashed)
     try {
-      return await bcrypt.compare(password, adminPassword);
+      const bcryptResult = await bcrypt.compare(password, adminPassword);
+      console.log('DEBUG: Bcrypt comparison result:', bcryptResult);
+      return bcryptResult;
     } catch (error) {
-      // If bcrypt fails, fall back to plain text comparison
-      // This handles the case where the env var is not hashed
-      return password === adminPassword;
+      console.log('DEBUG: Bcrypt comparison failed, password mismatch');
+      return false;
     }
   } catch (error) {
     console.error('Error validating credentials:', error);
