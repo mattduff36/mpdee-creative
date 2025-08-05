@@ -30,8 +30,8 @@ export async function GET(
       );
     }
 
-    // Generate HTML for PDF
-    const htmlContent = await generateInvoicePDF({
+    // Generate actual PDF buffer
+    const pdfBuffer = await generateInvoicePDF({
       invoice,
       company: {
         name: process.env.COMPANY_NAME || 'MPDEE Creative',
@@ -41,73 +41,13 @@ export async function GET(
       },
     });
 
-    // Add user-controlled print button
-    const htmlWithPrintButton = htmlContent.replace(
-      '</head>',
-      `
-        <style>
-          .print-controls {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1000;
-            background: white;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            border: 1px solid #e5e7eb;
-          }
-          .print-btn {
-            background: #4f46e5;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-right: 10px;
-          }
-          .print-btn:hover {
-            background: #3730a3;
-          }
-          .close-btn {
-            background: #6b7280;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 6px;
-            cursor: pointer;
-          }
-          .close-btn:hover {
-            background: #4b5563;
-          }
-          @media print {
-            .print-controls { display: none; }
-          }
-        </style>
-        <script>
-          function printInvoice() {
-            window.print();
-          }
-          function closeWindow() {
-            window.close();
-          }
-        </script>
-      </head>`
-    ).replace(
-      '<body>',
-      `<body>
-        <div class="print-controls">
-          <button class="print-btn" onclick="printInvoice()">📄 Save as PDF</button>
-          <button class="close-btn" onclick="closeWindow()">✕ Close</button>
-        </div>`
-    );
-
-    // Return clean HTML with print controls
-    return new NextResponse(htmlWithPrintButton, {
+    // Return PDF file for direct download
+    return new NextResponse(pdfBuffer, {
       status: 200,
       headers: {
-        'Content-Type': 'text/html; charset=utf-8',
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': `attachment; filename="invoice-${invoice.invoice_number}.pdf"`,
+        'Content-Length': pdfBuffer.length.toString(),
         'Cache-Control': 'no-cache',
       },
     });
