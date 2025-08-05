@@ -42,7 +42,7 @@ export async function GET(
     });
 
     // Return PDF as response
-    return new NextResponse(pdfBuffer, {
+    return new NextResponse(pdfBuffer.toString('utf-8'), {
       status: 200,
       headers: {
         'Content-Type': 'text/html',

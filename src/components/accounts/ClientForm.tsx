@@ -118,7 +118,7 @@ export default function ClientForm({ client, onSuccess, onCancel }: ClientFormPr
                 id="name"
                 name="name"
                 required
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="mt-1 block w-full px-3 py-2 border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 placeholder="Client name"
                 value={formData.name}
                 onChange={handleChange}
@@ -135,7 +135,7 @@ export default function ClientForm({ client, onSuccess, onCancel }: ClientFormPr
                 id="email"
                 name="email"
                 required
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="mt-1 block w-full px-3 py-2 border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 placeholder="client@example.co.uk"
                 value={formData.email}
                 onChange={handleChange}
@@ -152,7 +152,7 @@ export default function ClientForm({ client, onSuccess, onCancel }: ClientFormPr
               type="tel"
               id="phone"
               name="phone"
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="mt-1 block w-full px-3 py-2 border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               placeholder="07700 900123"
               value={formData.phone}
               onChange={handleChange}
@@ -168,7 +168,7 @@ export default function ClientForm({ client, onSuccess, onCancel }: ClientFormPr
               id="billing_address"
               name="billing_address"
               rows={3}
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="mt-1 block w-full px-3 py-2 border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               placeholder="123 High Street&#10;London&#10;SW1A 1AA"
               value={formData.billing_address}
               onChange={handleChange}
@@ -184,7 +184,7 @@ export default function ClientForm({ client, onSuccess, onCancel }: ClientFormPr
               id="notes"
               name="notes"
               rows={3}
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="mt-1 block w-full px-3 py-2 border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               placeholder="Additional notes about this client..."
               value={formData.notes}
               onChange={handleChange}

@@ -115,7 +115,7 @@ export default function ClientsPage() {
                 <input
                   type="text"
                   placeholder="Search clients..."
-                  className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  className="block w-full px-3 py-2 border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   value={search}
                   onChange={handleSearch}
                 />
