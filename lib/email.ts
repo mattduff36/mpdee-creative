@@ -54,7 +54,7 @@ export async function sendInvoiceEmail(invoiceId: string): Promise<boolean> {
     }
 
     // Generate PDF
-    const pdfBuffer = await generateInvoicePDF({
+    const pdfArrayBuffer = await generateInvoicePDF({
       invoice: invoice as any,
       company: {
         name: process.env.COMPANY_NAME || 'MPDEE Creative',
@@ -63,6 +63,9 @@ export async function sendInvoiceEmail(invoiceId: string): Promise<boolean> {
         address: process.env.COMPANY_ADDRESS,
       },
     });
+
+    // Convert ArrayBuffer to Buffer for email attachment
+    const pdfBuffer = Buffer.from(pdfArrayBuffer);
 
     // Create email content
     const emailSubject = `Invoice ${invoice.invoice_number} from ${process.env.COMPANY_NAME || 'MPDEE Creative'}`;
@@ -109,9 +112,9 @@ export async function sendInvoiceEmail(invoiceId: string): Promise<boolean> {
       html: emailHtml,
       attachments: [
         {
-          filename: `invoice-${invoice.invoice_number}.html`,
+          filename: `invoice-${invoice.invoice_number}.pdf`,
           content: pdfBuffer,
-          contentType: 'text/html',
+          contentType: 'application/pdf',
         },
       ],
     });

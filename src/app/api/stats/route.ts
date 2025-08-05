@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { prisma } from '../../../../lib/db';
 import { requireAuth } from '../../../../lib/auth';
 import { ApiResponse } from '../../../../lib/types';
@@ -10,7 +10,7 @@ interface DashboardStats {
 }
 
 // GET /api/stats - Get dashboard statistics
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     // Check authentication
     await requireAuth();

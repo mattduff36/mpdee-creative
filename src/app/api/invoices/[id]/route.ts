@@ -162,18 +162,14 @@ export async function PUT(
       return { ...invoice, items: invoiceItems };
     });
 
-    // Fetch the complete updated invoice
-    const completeInvoice = await prisma.invoice.findUnique({
-      where: { id },
-      include: {
-        client: true,
-        items: true,
-      },
+    // Fetch the client data for the response
+    const clientData = await prisma.client.findUnique({
+      where: { id: client_id },
     });
 
-    const response: ApiResponse<typeof completeInvoice> = {
+    const response: ApiResponse<typeof updatedInvoice & { client: typeof clientData }> = {
       success: true,
-      data: completeInvoice,
+      data: { ...updatedInvoice, client: clientData },
     };
 
     return NextResponse.json(response);
