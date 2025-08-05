@@ -10,9 +10,9 @@ export async function generateInvoicePDF(data: InvoicePDFData): Promise<Buffer> 
     const doc = new jsPDF();
     
     // Brand color (convert hex to RGB)
-    const brandColor = [79, 70, 229]; // #4f46e5
-    const blackColor = [0, 0, 0];
-    const grayColor = [107, 114, 128]; // #6b7280
+    const brandColor = [79, 70, 229] as const; // #4f46e5
+    const blackColor = [0, 0, 0] as const;
+    const grayColor = [107, 114, 128] as const; // #6b7280
 
     let yPos = 20;
 
