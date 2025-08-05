@@ -1,5 +1,12 @@
-// Invoice status type (matches Prisma schema)
-export type InvoiceStatus = 'DRAFT' | 'SENT' | 'PAID' | 'OVERDUE';
+// Invoice status enum (matches Prisma schema)
+export const InvoiceStatus = {
+  DRAFT: 'DRAFT',
+  SENT: 'SENT', 
+  PAID: 'PAID',
+  OVERDUE: 'OVERDUE'
+} as const;
+
+export type InvoiceStatus = typeof InvoiceStatus[keyof typeof InvoiceStatus];
 
 // Core database types based on Prisma schema
 export interface Client {

@@ -145,7 +145,7 @@ export async function POST(request: NextRequest) {
     }, 0);
 
     // Create the invoice with items in a transaction
-    const invoice = await prisma.$transaction(async (tx: typeof prisma) => {
+    const invoice = await prisma.$transaction(async (tx) => {
       // Create the invoice
       const newInvoice = await tx.invoice.create({
         data: {

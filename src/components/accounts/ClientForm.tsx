@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Client, ClientFormData } from '../../lib/types';
+import { Client, ClientFormData } from '../../../lib/types';
 
 interface ClientFormProps {
   client?: Client;

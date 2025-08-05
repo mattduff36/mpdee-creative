@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Client, InvoiceWithDetails, InvoiceFormData, InvoiceItemFormData, PaginatedResponse } from '../../lib/types';
+import { Client, InvoiceWithDetails, InvoiceFormData, InvoiceItemFormData, PaginatedResponse } from '../../../lib/types';
 
 interface InvoiceFormProps {
   invoice?: InvoiceWithDetails;

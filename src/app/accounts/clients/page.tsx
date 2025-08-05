@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Navigation from '../../../components/accounts/Navigation';
-import { Client, PaginatedResponse } from '../../../lib/types';
+import { Client, PaginatedResponse } from '../../../../lib/types';
 
 export default function ClientsPage() {
   const [clients, setClients] = useState<Client[]>([]);

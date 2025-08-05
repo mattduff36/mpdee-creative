@@ -121,7 +121,7 @@ export async function PUT(
     }, 0);
 
     // Update the invoice with items in a transaction
-    const updatedInvoice = await prisma.$transaction(async (tx: typeof prisma) => {
+    const updatedInvoice = await prisma.$transaction(async (tx) => {
       // Delete existing items
       await tx.invoiceItem.deleteMany({
         where: { invoice_id: id },
