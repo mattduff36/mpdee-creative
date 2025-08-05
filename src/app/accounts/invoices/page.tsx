@@ -4,6 +4,12 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Navigation from '../../../components/accounts/Navigation';
 import { InvoiceWithClient, PaginatedResponse, InvoiceStatus } from '../../../../lib/types';
+import { 
+  PencilIcon, 
+  PaperAirplaneIcon, 
+  ArrowDownTrayIcon, 
+  TrashIcon 
+} from '@heroicons/react/24/outline';
 
 export default function InvoicesPage() {
   const [invoices, setInvoices] = useState<InvoiceWithClient[]>([]);
@@ -228,12 +234,13 @@ export default function InvoicesPage() {
                               </div>
                             </div>
                           </div>
-                          <div className="flex items-center space-x-2">
+                          <div className="flex items-center space-x-3">
                             <button
                               onClick={() => router.push(`/accounts/invoices/${invoice.id}`)}
-                              className="text-indigo-600 hover:text-indigo-900 text-sm font-medium"
+                              className="text-indigo-600 hover:text-indigo-900 p-1 rounded hover:bg-indigo-50 transition-colors"
+                              title={invoice.status === InvoiceStatus.DRAFT ? 'Edit Invoice' : 'View Invoice'}
                             >
-                              {invoice.status === InvoiceStatus.DRAFT ? 'Edit' : 'View'}
+                              <PencilIcon className="h-5 w-5" />
                             </button>
                             {invoice.status === InvoiceStatus.DRAFT && (
                               <button
@@ -251,23 +258,26 @@ export default function InvoicesPage() {
                                     setError('Failed to send invoice');
                                   }
                                 }}
-                                className="text-green-600 hover:text-green-900 text-sm font-medium"
+                                className="text-green-600 hover:text-green-900 p-1 rounded hover:bg-green-50 transition-colors"
+                                title="Send Invoice"
                               >
-                                Send
+                                <PaperAirplaneIcon className="h-5 w-5" />
                               </button>
                             )}
                             <button
                               onClick={() => window.open(`/api/invoices/${invoice.id}/pdf`, '_blank')}
-                              className="text-blue-600 hover:text-blue-900 text-sm font-medium"
+                              className="text-blue-600 hover:text-blue-900 p-1 rounded hover:bg-blue-50 transition-colors"
+                              title="Download PDF"
                             >
-                              Download
+                              <ArrowDownTrayIcon className="h-5 w-5" />
                             </button>
                             {invoice.status === InvoiceStatus.DRAFT && (
                               <button
                                 onClick={() => setDeleteInvoiceId(invoice.id)}
-                                className="text-red-600 hover:text-red-900 text-sm font-medium"
+                                className="text-red-600 hover:text-red-900 p-1 rounded hover:bg-red-50 transition-colors"
+                                title="Delete Invoice"
                               >
-                                Delete
+                                <TrashIcon className="h-5 w-5" />
                               </button>
                             )}
                           </div>

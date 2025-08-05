@@ -4,6 +4,10 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Navigation from '../../../components/accounts/Navigation';
 import { Client, PaginatedResponse } from '../../../../lib/types';
+import { 
+  PencilIcon, 
+  TrashIcon 
+} from '@heroicons/react/24/outline';
 
 export default function ClientsPage() {
   const [clients, setClients] = useState<Client[]>([]);
@@ -178,18 +182,20 @@ export default function ClientsPage() {
                             </p>
                           </div>
                         </div>
-                        <div className="flex items-center space-x-2">
+                        <div className="flex items-center space-x-3">
                           <button
                             onClick={() => router.push(`/accounts/clients/${client.id}`)}
-                            className="text-indigo-600 hover:text-indigo-900 text-sm font-medium"
+                            className="text-indigo-600 hover:text-indigo-900 p-1 rounded hover:bg-indigo-50 transition-colors"
+                            title="Edit Client"
                           >
-                            Edit
+                            <PencilIcon className="h-5 w-5" />
                           </button>
                           <button
                             onClick={() => setDeleteClientId(client.id)}
-                            className="text-red-600 hover:text-red-900 text-sm font-medium"
+                            className="text-red-600 hover:text-red-900 p-1 rounded hover:bg-red-50 transition-colors"
+                            title="Delete Client"
                           >
-                            Delete
+                            <TrashIcon className="h-5 w-5" />
                           </button>
                         </div>
                       </div>

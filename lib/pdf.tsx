@@ -1,6 +1,8 @@
 // PDF generation utilities for invoices using jsPDF
 import { jsPDF } from 'jspdf';
 import { InvoicePDFData } from './types';
+import fs from 'fs';
+import path from 'path';
 
 export async function generateInvoicePDF(data: InvoicePDFData): Promise<ArrayBuffer> {
   try {
@@ -14,123 +16,259 @@ export async function generateInvoicePDF(data: InvoicePDFData): Promise<ArrayBuf
     const blackColor = [0, 0, 0] as const;
     const grayColor = [107, 114, 128] as const; // #6b7280
 
-    let yPos = 20;
+    let yPos = 25; // Start with more top margin
 
-    // Header - Company name
-    doc.setFontSize(18);
-    doc.setTextColor(...brandColor);
-    doc.text(company.name, 20, yPos);
-    yPos += 10;
-
-    // Company details
-    doc.setFontSize(10);
-    doc.setTextColor(...blackColor);
-    doc.text(company.email, 20, yPos);
-    yPos += 5;
-    
-    if (company.phone) {
-      doc.text(company.phone, 20, yPos);
-      yPos += 5;
+    // Header - Company logo (left side)
+    let logoHeight = 0;
+    try {
+      const logoPath = path.join(process.cwd(), 'public', 'images', 'Invoice-logo.png');
+      if (fs.existsSync(logoPath)) {
+        const logoData = fs.readFileSync(logoPath);
+        const logoBase64 = `data:image/png;base64,${logoData.toString('base64')}`;
+        
+        // Set logo dimensions - increased size for better presence
+        const logoWidth = 60;
+        
+        doc.addImage(logoBase64, 'PNG', 20, yPos, logoWidth, 0);
+        logoHeight = 25; // Estimate logo height for spacing
+      } else {
+        // Fallback to text if logo not found
+        doc.setFontSize(20);
+        doc.setTextColor(...brandColor);
+        doc.text(company.name, 20, yPos);
+        logoHeight = 15;
+      }
+    } catch (error) {
+      console.warn('Failed to load logo, using text fallback:', error);
+      doc.setFontSize(20);
+      doc.setTextColor(...brandColor);
+      doc.text(company.name, 20, yPos);
+      logoHeight = 15;
     }
+
+    // Invoice title and number (right side) - positioned to align with logo
+    const rightColumnX = 190;
+    doc.setFontSize(28);
+    doc.setTextColor(...brandColor);
+    doc.text('INVOICE', rightColumnX, yPos + 5, { align: 'right' });
     
+    doc.setFontSize(16);
+    doc.setTextColor(...blackColor);
+    doc.text(`${invoice.invoice_number}`, rightColumnX, yPos + 15, { align: 'right' });
+    
+    doc.setFontSize(11);
+    doc.setTextColor(...grayColor);
+    doc.text(`Date: ${formatDate(invoice.created_at)}`, rightColumnX, yPos + 25, { align: 'right' });
+    
+    if (invoice.due_date) {
+      doc.text(`Due: ${formatDate(invoice.due_date)}`, rightColumnX, yPos + 32, { align: 'right' });
+    }
+
+    // Move to next section with proper spacing after logo
+    yPos += logoHeight + 10;
+
+    // Company address only (removed email and phone)
     if (company.address) {
+      doc.setFontSize(9); // Smaller font for company address
+      doc.setTextColor(...grayColor);
       const addressLines = company.address.split('\n');
       addressLines.forEach((line) => {
         doc.text(line, 20, yPos);
-        yPos += 5;
+        yPos += 4; // Reduced line spacing
       });
     }
 
-    // Invoice title and number (right side)
-    doc.setFontSize(24);
-    doc.setTextColor(...brandColor);
-    doc.text('INVOICE', 150, 20, { align: 'right' });
-    
-    doc.setFontSize(14);
-    doc.setTextColor(...blackColor);
-    doc.text(`#${invoice.invoice_number}`, 150, 35, { align: 'right' });
-    
-    doc.setFontSize(10);
-    doc.text(`Date: ${formatDate(invoice.created_at)}`, 150, 45, { align: 'right' });
-    
-    if (invoice.due_date) {
-      doc.text(`Due: ${formatDate(invoice.due_date)}`, 150, 52, { align: 'right' });
-    }
-
-    // Horizontal line
-    yPos = 65;
-    doc.setDrawColor(...brandColor);
-    doc.setLineWidth(1);
-    doc.line(20, yPos, 190, yPos);
-    yPos += 15;
-
-    // Bill To section
-    doc.setFontSize(12);
-    doc.setTextColor(...brandColor);
-    doc.text('BILL TO:', 20, yPos);
+    // Reduced spacing after company details
     yPos += 8;
 
-    doc.setFontSize(11);
+    // Professional horizontal divider line
+    doc.setDrawColor(...brandColor);
+    doc.setLineWidth(0.8);
+    doc.line(20, yPos, 190, yPos);
+    yPos += 12; // Reduced spacing after divider
+
+    // Bill To section with improved styling
+    doc.setFontSize(13);
+    doc.setTextColor(...brandColor);
+    doc.text('BILL TO:', 20, yPos);
+    yPos += 10;
+
+    // Client name with emphasis
+    doc.setFontSize(12);
     doc.setTextColor(...blackColor);
     doc.text(invoice.client.name, 20, yPos);
     yPos += 6;
 
-    doc.setFontSize(9);
-    doc.text(invoice.client.email, 20, yPos);
-    yPos += 5;
-
-    if (invoice.client.phone) {
-      doc.text(invoice.client.phone, 20, yPos);
-      yPos += 5;
-    }
-
+    // Client address only (removed email and phone)
     if (invoice.client.billing_address) {
+      doc.setFontSize(10);
+      doc.setTextColor(...grayColor);
       const clientAddressLines = invoice.client.billing_address.split('\n');
       clientAddressLines.forEach((line) => {
         doc.text(line, 20, yPos);
-        yPos += 5;
+        yPos += 4; // Reduced line spacing to less than 1.0 (was 6)
       });
     }
 
-    yPos += 10;
+    yPos += 8; // Further reduced spacing before table
 
-    // Items table header
+    // Professional items table header
+    const tableHeaderHeight = 10;
     doc.setFillColor(...brandColor);
-    doc.rect(20, yPos, 170, 8, 'F');
+    doc.rect(20, yPos, 170, tableHeaderHeight, 'F');
     
-    doc.setFontSize(9);
+    doc.setFontSize(10);
     doc.setTextColor(255, 255, 255);
-    doc.text('Description', 22, yPos + 5);
-    doc.text('Qty', 120, yPos + 5, { align: 'right' });
-    doc.text('Rate', 140, yPos + 5, { align: 'right' });
-    doc.text('Amount', 185, yPos + 5, { align: 'right' });
-    yPos += 8;
+    doc.text('Description', 25, yPos + 6.5);
+    doc.text('Qty', 125, yPos + 6.5, { align: 'center' });
+    doc.text('Rate', 150, yPos + 6.5, { align: 'center' });
+    doc.text('Amount', 185, yPos + 6.5, { align: 'right' });
+    yPos += tableHeaderHeight;
 
-    // Items table rows
+    // Items table rows with improved styling and word wrapping
     doc.setTextColor(...blackColor);
+    const baseRowHeight = 8;
+    const maxDescriptionWidth = 95; // Maximum width for description column
+    
     invoice.items.forEach((item, index) => {
-      if (index % 2 === 1) {
-        doc.setFillColor(249, 250, 251); // Light gray for alternating rows
-        doc.rect(20, yPos, 170, 6, 'F');
+      // Prepare description with agency commission if applicable
+      let fullDescription = item.description;
+      if (item.agency_commission && item.agency_commission > 0) {
+        // agency_commission is already stored as a percentage in the database
+        const commissionPercent = item.agency_commission % 1 === 0 ? 
+          item.agency_commission.toString() : 
+          item.agency_commission.toFixed(1);
+        fullDescription += `\n- minus ${commissionPercent}% Agency Commission`;
       }
       
-      doc.text(item.description, 22, yPos + 4);
-      doc.text(item.quantity.toString(), 120, yPos + 4, { align: 'right' });
-      doc.text(formatCurrency(item.rate), 140, yPos + 4, { align: 'right' });
-      doc.text(formatCurrency(item.total), 185, yPos + 4, { align: 'right' });
-      yPos += 6;
+      // Split description into lines that fit within the column width
+      doc.setFontSize(10);
+      const descriptionLines = doc.splitTextToSize(fullDescription, maxDescriptionWidth);
+      const actualRowHeight = Math.max(baseRowHeight, descriptionLines.length * 4 + 4);
+      
+      // Alternating row colors for better readability
+      if (index % 2 === 1) {
+        doc.setFillColor(248, 250, 252); // Very light blue-gray
+        doc.rect(20, yPos, 170, actualRowHeight, 'F');
+      }
+      
+      // Draw description with word wrapping
+      doc.setTextColor(...blackColor);
+      descriptionLines.forEach((line: string, lineIndex: number) => {
+        if (lineIndex === 0) {
+          doc.text(line, 25, yPos + 5.5);
+        } else {
+          // Agency commission line in dark gray
+          if (line.includes('minus') && line.includes('Agency Commission')) {
+            doc.setTextColor(...grayColor);
+            doc.text(line, 25, yPos + 5.5 + (lineIndex * 4));
+            doc.setTextColor(...blackColor);
+          } else {
+            doc.text(line, 25, yPos + 5.5 + (lineIndex * 4));
+          }
+        }
+      });
+      
+      // Draw other columns (centered vertically in the row)
+      const centerY = yPos + (actualRowHeight / 2) + 1;
+      doc.text(item.quantity.toString(), 125, centerY, { align: 'center' });
+      doc.text(formatCurrency(item.rate), 150, centerY, { align: 'center' });
+      doc.text(formatCurrency(item.total), 185, centerY, { align: 'right' });
+      
+      yPos += actualRowHeight;
     });
 
-    yPos += 10;
+    yPos += 15;
 
-    // Total
-    doc.setFontSize(12);
+    // Professional total section with background
+    const totalSectionY = yPos;
+    const totalSectionHeight = 12;
+    
+    // Light background for total
+    doc.setFillColor(249, 250, 251);
+    doc.rect(120, totalSectionY - 2, 70, totalSectionHeight, 'F');
+    
+    // Total label and amount
+    doc.setFontSize(13);
     doc.setTextColor(...brandColor);
-    doc.text('TOTAL:', 140, yPos, { align: 'right' });
-    doc.setFontSize(14);
-    doc.text(formatCurrency(invoice.total_amount), 185, yPos, { align: 'right' });
+    doc.text('TOTAL:', 155, yPos + 6, { align: 'right' });
+    doc.setFontSize(16);
+    doc.setTextColor(...blackColor);
+    doc.text(formatCurrency(invoice.total_amount), 185, yPos + 6, { align: 'right' });
 
-    yPos += 20;
+    yPos += 25;
+
+    // Professional Payment Details Section
+    doc.setFontSize(13);
+    doc.setTextColor(...brandColor);
+    doc.text('PAYMENT DETAILS:', 20, yPos);
+    yPos += 15;
+
+    // Payment details box with subtle border and small padding
+    const paymentBoxY = yPos - 2;
+    const paymentBoxHeight = 32; // Slightly increased for padding
+    doc.setDrawColor(220, 220, 220);
+    doc.setLineWidth(0.5);
+    doc.rect(20, paymentBoxY, 170, paymentBoxHeight);
+    
+    // Payment details in two columns with tighter spacing and padding
+    const leftColumnX = 25;
+    const paymentRightColumnX = 115;
+    let leftYPos = yPos + 2; // Add small top padding
+    let rightYPos = yPos + 2; // Add small top padding
+
+    // Left column - Beneficiary and account details
+    doc.setFontSize(9);
+    doc.setTextColor(...grayColor);
+    doc.text('Beneficiary:', leftColumnX, leftYPos);
+    leftYPos += 4;
+    doc.setFontSize(10);
+    doc.setTextColor(...blackColor);
+    doc.text('Matthew Duffill', leftColumnX, leftYPos);
+    leftYPos += 7;
+
+    doc.setFontSize(9);
+    doc.setTextColor(...grayColor);
+    doc.text('Sort Code:', leftColumnX, leftYPos);
+    leftYPos += 4;
+    doc.setFontSize(10);
+    doc.setTextColor(...blackColor);
+    doc.text('04-29-09', leftColumnX, leftYPos);
+    leftYPos += 7;
+
+    doc.setFontSize(9);
+    doc.setTextColor(...grayColor);
+    doc.text('Account Number:', leftColumnX, leftYPos);
+    leftYPos += 4;
+    doc.setFontSize(10);
+    doc.setTextColor(...blackColor);
+    doc.text('38328313', leftColumnX, leftYPos);
+
+    // Right column - Bank address (vertically centered and with 1.25 line spacing)
+    const leftColumnStartY = yPos + 2;
+    const leftColumnEndY = leftYPos; // Final position after all left column content
+    const leftColumnTotalHeight = leftColumnEndY - leftColumnStartY;
+    
+    const bankLineSpacing = 5; // 1.25 line spacing (4 * 1.25 = 5)
+    const bankContentHeight = 3 * bankLineSpacing; // 3 gaps between 4 lines
+    
+    // Center the bank address content within the left column height
+    const bankStartY = leftColumnStartY + (leftColumnTotalHeight - bankContentHeight) / 2;
+    
+    let bankYPos = bankStartY;
+    doc.setFontSize(9);
+    doc.setTextColor(...grayColor);
+    doc.text('Bank Address:', paymentRightColumnX, bankYPos);
+    bankYPos += bankLineSpacing;
+    doc.setFontSize(10);
+    doc.setTextColor(...blackColor);
+    doc.text('Revolut Ltd', paymentRightColumnX, bankYPos);
+    bankYPos += bankLineSpacing;
+    doc.text('7 Westferry Circus, E14 4HD', paymentRightColumnX, bankYPos);
+    bankYPos += bankLineSpacing;
+    doc.text('London, United Kingdom', paymentRightColumnX, bankYPos);
+
+    yPos = paymentBoxY + paymentBoxHeight + 10;
 
     // Footer
     doc.setFontSize(10);
