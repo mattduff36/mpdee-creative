@@ -26,18 +26,8 @@ const nextConfig = {
     return config;
   },
   
-  // API routes configuration
-  api: {
-    bodyParser: {
-      sizeLimit: '10mb', // Allow larger payloads for PDF uploads
-    },
-    responseLimit: '10mb', // Allow larger responses for PDF downloads
-  },
-  
-  // Experimental features for better performance
-  experimental: {
-    serverComponentsExternalPackages: ['@prisma/client', 'bcryptjs'],
-  },
+  // Server external packages (moved from experimental)
+  serverExternalPackages: ['@prisma/client', 'bcryptjs'],
 };
 
 module.exports = nextConfig; 

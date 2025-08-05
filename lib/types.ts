@@ -1,3 +1,6 @@
+// Invoice status type (matches Prisma schema)
+export type InvoiceStatus = 'DRAFT' | 'SENT' | 'PAID' | 'OVERDUE';
+
 // Core database types based on Prisma schema
 export interface Client {
   id: string;
@@ -33,12 +36,7 @@ export interface InvoiceItem {
   created_at: Date;
 }
 
-export enum InvoiceStatus {
-  DRAFT = 'DRAFT',
-  SENT = 'SENT',
-  PAID = 'PAID',
-  OVERDUE = 'OVERDUE'
-}
+
 
 // Extended types with relations
 export interface ClientWithInvoices extends Client {

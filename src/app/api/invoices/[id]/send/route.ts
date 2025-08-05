@@ -3,17 +3,16 @@ import { requireAuth } from '../../../../../../lib/auth';
 import { sendInvoiceEmail } from '../../../../../../lib/email';
 import { ApiResponse } from '../../../../../../lib/types';
 
-interface RouteParams {
-  params: { id: string };
-}
-
 // POST /api/invoices/[id]/send - Send invoice via email
-export async function POST(request: NextRequest, { params }: RouteParams) {
+export async function POST(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
     // Check authentication
     await requireAuth();
 
-    const { id } = params;
+    const { id } = await params;
 
     // Send the invoice email
     const emailSent = await sendInvoiceEmail(id);

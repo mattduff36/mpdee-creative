@@ -3,17 +3,16 @@ import { prisma } from '../../../../../lib/db';
 import { requireAuth } from '../../../../../lib/auth';
 import { InvoiceFormData, ApiResponse, InvoiceWithDetails, InvoiceStatus } from '../../../../../lib/types';
 
-interface RouteParams {
-  params: { id: string };
-}
-
 // GET /api/invoices/[id] - Get a specific invoice with details
-export async function GET(request: NextRequest, { params }: RouteParams) {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
     // Check authentication
     await requireAuth();
 
-    const { id } = params;
+    const { id } = await params;
 
     const invoice = await prisma.invoice.findUnique({
       where: { id },
@@ -54,12 +53,15 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 }
 
 // PUT /api/invoices/[id] - Update a specific invoice
-export async function PUT(request: NextRequest, { params }: RouteParams) {
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
     // Check authentication
     await requireAuth();
 
-    const { id } = params;
+    const { id } = await params;
     const body = await request.json();
     const { client_id, due_date, items }: InvoiceFormData = body;
 
@@ -186,12 +188,15 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 }
 
 // DELETE /api/invoices/[id] - Delete a specific invoice
-export async function DELETE(request: NextRequest, { params }: RouteParams) {
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
     // Check authentication
     await requireAuth();
 
-    const { id } = params;
+    const { id } = await params;
 
     // Check if invoice exists
     const existingInvoice = await prisma.invoice.findUnique({

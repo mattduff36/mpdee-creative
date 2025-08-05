@@ -3,17 +3,16 @@ import { prisma } from '../../../../../lib/db';
 import { requireAuth } from '../../../../../lib/auth';
 import { ClientFormData, ApiResponse, Client } from '../../../../../lib/types';
 
-interface RouteParams {
-  params: { id: string };
-}
-
 // GET /api/clients/[id] - Get a specific client
-export async function GET(request: NextRequest, { params }: RouteParams) {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
     // Check authentication
     await requireAuth();
 
-    const { id } = params;
+    const { id } = await params;
 
     const client = await prisma.client.findUnique({
       where: { id },
@@ -50,12 +49,15 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 }
 
 // PUT /api/clients/[id] - Update a specific client
-export async function PUT(request: NextRequest, { params }: RouteParams) {
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
     // Check authentication
     await requireAuth();
 
-    const { id } = params;
+    const { id } = await params;
     const body = await request.json();
     const { name, email, phone, billing_address, notes }: ClientFormData = body;
 
@@ -139,12 +141,15 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 }
 
 // DELETE /api/clients/[id] - Delete a specific client
-export async function DELETE(request: NextRequest, { params }: RouteParams) {
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
     // Check authentication
     await requireAuth();
 
-    const { id } = params;
+    const { id } = await params;
 
     // Check if client exists
     const existingClient = await prisma.client.findUnique({

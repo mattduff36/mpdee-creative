@@ -3,17 +3,16 @@ import { requireAuth } from '../../../../../../lib/auth';
 import { generateInvoicePDF } from '../../../../../../lib/pdf';
 import { prisma } from '../../../../../../lib/db';
 
-interface RouteParams {
-  params: { id: string };
-}
-
 // GET /api/invoices/[id]/pdf - Generate and download invoice PDF
-export async function GET(request: NextRequest, { params }: RouteParams) {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
     // Check authentication
     await requireAuth();
 
-    const { id } = params;
+    const { id } = await params;
 
     // Fetch invoice with client and items
     const invoice = await prisma.invoice.findUnique({

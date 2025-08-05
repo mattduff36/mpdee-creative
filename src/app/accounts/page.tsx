@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import Link from 'next/link';
 import Navigation from '../../components/accounts/Navigation';
 
 export const metadata: Metadata = {
@@ -50,9 +51,9 @@ export default function AccountsDashboard() {
                 </div>
                 <div className="bg-gray-50 px-5 py-3">
                   <div className="text-sm">
-                    <a href="/accounts/clients" className="font-medium text-indigo-700 hover:text-indigo-900">
+                    <Link href="/accounts/clients" className="font-medium text-indigo-700 hover:text-indigo-900">
                       View all clients
-                    </a>
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -79,9 +80,9 @@ export default function AccountsDashboard() {
                 </div>
                 <div className="bg-gray-50 px-5 py-3">
                   <div className="text-sm">
-                    <a href="/accounts/invoices" className="font-medium text-green-700 hover:text-green-900">
+                    <Link href="/accounts/invoices" className="font-medium text-green-700 hover:text-green-900">
                       View all invoices
-                    </a>
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -108,9 +109,9 @@ export default function AccountsDashboard() {
                 </div>
                 <div className="bg-gray-50 px-5 py-3">
                   <div className="text-sm">
-                    <a href="/accounts/invoices" className="font-medium text-yellow-700 hover:text-yellow-900">
+                    <Link href="/accounts/invoices" className="font-medium text-yellow-700 hover:text-yellow-900">
                       View unpaid invoices
-                    </a>
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -122,7 +123,7 @@ export default function AccountsDashboard() {
                 Quick Actions
               </h3>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                <a
+                <Link
                   href="/accounts/clients/new"
                   className="relative group bg-white p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-500 rounded-lg shadow hover:shadow-md transition-shadow"
                 >
@@ -142,9 +143,9 @@ export default function AccountsDashboard() {
                       Create a new client record for invoicing
                     </p>
                   </div>
-                </a>
+                </Link>
 
-                <a
+                <Link
                   href="/accounts/invoices/new"
                   className="relative group bg-white p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-500 rounded-lg shadow hover:shadow-md transition-shadow"
                 >
@@ -164,7 +165,7 @@ export default function AccountsDashboard() {
                       Generate a new invoice for a client
                     </p>
                   </div>
-                </a>
+                </Link>
               </div>
             </div>
           </div>

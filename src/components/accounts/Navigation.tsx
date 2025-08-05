@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function Navigation() {
   const [isLoggingOut, setIsLoggingOut] = useState(false);
@@ -49,24 +50,24 @@ export default function Navigation() {
 
           <div className="flex items-center space-x-4">
             <nav className="flex space-x-8">
-              <a
+              <Link
                 href="/accounts"
                 className="text-gray-500 hover:text-gray-700 px-3 py-2 rounded-md text-sm font-medium"
               >
                 Dashboard
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/accounts/clients"
                 className="text-gray-500 hover:text-gray-700 px-3 py-2 rounded-md text-sm font-medium"
               >
                 Clients
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/accounts/invoices"
                 className="text-gray-500 hover:text-gray-700 px-3 py-2 rounded-md text-sm font-medium"
               >
                 Invoices
-              </a>
+              </Link>
             </nav>
 
             <button

@@ -55,7 +55,7 @@ export async function sendInvoiceEmail(invoiceId: string): Promise<boolean> {
 
     // Generate PDF
     const pdfBuffer = await generateInvoicePDF({
-      invoice,
+      invoice: invoice as any,
       company: {
         name: process.env.COMPANY_NAME || 'MPDEE Creative',
         email: process.env.COMPANY_EMAIL || 'matt.mpdee@gmail.com',

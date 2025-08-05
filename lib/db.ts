@@ -49,7 +49,7 @@ export async function checkDatabaseHealth() {
 
 // Transaction wrapper
 export async function withTransaction<T>(
-  fn: (prisma: PrismaClient) => Promise<T>
+  fn: (prisma: Omit<PrismaClient, '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'>) => Promise<T>
 ): Promise<T> {
   return await prisma.$transaction(fn);
 }
