@@ -47,13 +47,14 @@ model Invoice {
 }
 
 model InvoiceItem {
-  id          String   @id @default(cuid())
-  invoice_id  String
-  description String
-  quantity    Float
-  rate        Float
-  total       Float
-  created_at  DateTime @default(now())
+  id                String   @id @default(cuid())
+  invoice_id        String
+  description       String
+  quantity          Float
+  rate              Float
+  total             Float
+  agency_commission Float    @default(0)
+  created_at        DateTime @default(now())
 
   // Relations
   invoice Invoice @relation(fields: [invoice_id], references: [id], onDelete: Cascade)

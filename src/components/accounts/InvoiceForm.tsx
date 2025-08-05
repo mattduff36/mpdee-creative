@@ -15,11 +15,13 @@ export default function InvoiceForm({ invoice, onSuccess, onCancel }: InvoiceFor
   const [formData, setFormData] = useState<InvoiceFormData>({
     client_id: '',
     due_date: '',
-    items: [{ description: '', quantity: 1, rate: 0 }],
+    items: [{ description: '', quantity: 1, rate: 0, agency_commission: 0 }],
   });
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingClients, setIsLoadingClients] = useState(true);
   const [error, setError] = useState('');
+  const [showAgencyModal, setShowAgencyModal] = useState(false);
+  const [selectedItemIndex, setSelectedItemIndex] = useState<number | null>(null);
   const router = useRouter();
 
   // Fetch clients for selection
@@ -57,6 +59,7 @@ export default function InvoiceForm({ invoice, onSuccess, onCancel }: InvoiceFor
           description: item.description,
           quantity: item.quantity,
           rate: item.rate,
+          agency_commission: item.agency_commission || 0,
         })),
       });
     }
@@ -86,8 +89,21 @@ export default function InvoiceForm({ invoice, onSuccess, onCancel }: InvoiceFor
   const addItem = () => {
     setFormData(prev => ({
       ...prev,
-      items: [...prev.items, { description: '', quantity: 1, rate: 0 }],
+      items: [...prev.items, { description: '', quantity: 1, rate: 0, agency_commission: 0 }],
     }));
+  };
+
+  const openAgencyModal = (itemIndex: number) => {
+    setSelectedItemIndex(itemIndex);
+    setShowAgencyModal(true);
+  };
+
+  const handleAgencyCommissionSave = (percentage: number) => {
+    if (selectedItemIndex !== null) {
+      handleItemChange(selectedItemIndex, 'agency_commission', percentage);
+    }
+    setShowAgencyModal(false);
+    setSelectedItemIndex(null);
   };
 
   const removeItem = (index: number) => {
@@ -100,7 +116,9 @@ export default function InvoiceForm({ invoice, onSuccess, onCancel }: InvoiceFor
   };
 
   const calculateItemTotal = (item: InvoiceItemFormData) => {
-    return item.quantity * item.rate;
+    const baseTotal = item.quantity * item.rate;
+    const commissionAmount = (baseTotal * item.agency_commission) / 100;
+    return baseTotal - commissionAmount;
   };
 
   const calculateInvoiceTotal = () => {
@@ -298,21 +316,45 @@ export default function InvoiceForm({ invoice, onSuccess, onCancel }: InvoiceFor
                         Total
                       </label>
                       <div className="mt-1 px-3 py-2 bg-gray-100 border border-gray-300 rounded-md text-sm text-gray-900">
-                        {formatCurrency(calculateItemTotal(item))}
+                        {item.agency_commission > 0 ? (
+                          <div>
+                            <div className="text-xs text-gray-500 line-through">
+                              {formatCurrency(item.quantity * item.rate)}
+                            </div>
+                            <div className="text-xs text-orange-600">
+                              -{item.agency_commission}% agency commission
+                            </div>
+                            <div className="font-medium">
+                              {formatCurrency(calculateItemTotal(item))}
+                            </div>
+                          </div>
+                        ) : (
+                          formatCurrency(calculateItemTotal(item))
+                        )}
                       </div>
                     </div>
 
                     <div className="sm:col-span-1 flex items-end">
-                      {formData.items.length > 1 && (
+                      <div className="space-y-1">
                         <button
                           type="button"
-                          onClick={() => removeItem(index)}
+                          onClick={() => openAgencyModal(index)}
                           disabled={isLoading}
-                          className="text-red-600 hover:text-red-900 text-sm font-medium disabled:opacity-50"
+                          className="block text-blue-600 hover:text-blue-900 text-xs font-medium disabled:opacity-50"
                         >
-                          Remove
+                          agency?
                         </button>
-                      )}
+                        {formData.items.length > 1 && (
+                          <button
+                            type="button"
+                            onClick={() => removeItem(index)}
+                            disabled={isLoading}
+                            className="block text-red-600 hover:text-red-900 text-xs font-medium disabled:opacity-50"
+                          >
+                            Remove
+                          </button>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -352,6 +394,84 @@ export default function InvoiceForm({ invoice, onSuccess, onCancel }: InvoiceFor
               ) : (
                 invoice ? 'Update Invoice' : 'Create Invoice'
               )}
+            </button>
+          </div>
+        </form>
+      </div>
+
+      {/* Agency Commission Modal */}
+      {showAgencyModal && (
+        <AgencyCommissionModal
+          currentPercentage={selectedItemIndex !== null ? formData.items[selectedItemIndex].agency_commission : 0}
+          onSave={handleAgencyCommissionSave}
+          onCancel={() => {
+            setShowAgencyModal(false);
+            setSelectedItemIndex(null);
+          }}
+        />
+      )}
+    </div>
+  );
+}
+
+// Agency Commission Modal Component
+interface AgencyCommissionModalProps {
+  currentPercentage: number;
+  onSave: (percentage: number) => void;
+  onCancel: () => void;
+}
+
+function AgencyCommissionModal({ currentPercentage, onSave, onCancel }: AgencyCommissionModalProps) {
+  const [percentage, setPercentage] = useState(currentPercentage);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSave(percentage);
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg p-6 w-full max-w-md">
+        <h3 className="text-lg font-medium text-gray-900 mb-4">
+          Set Agency Commission
+        </h3>
+        
+        <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Commission Percentage
+            </label>
+            <div className="relative">
+              <input
+                type="number"
+                min="0"
+                max="100"
+                step="0.01"
+                value={percentage}
+                onChange={(e) => setPercentage(parseFloat(e.target.value) || 0)}
+                className="block w-full pl-3 pr-8 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                placeholder="0"
+                autoFocus
+              />
+              <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                <span className="text-gray-500 sm:text-sm">%</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex justify-end space-x-3">
+            <button
+              type="button"
+              onClick={onCancel}
+              className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="bg-indigo-600 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            >
+              Save
             </button>
           </div>
         </form>

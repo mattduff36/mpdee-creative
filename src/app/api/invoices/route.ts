@@ -139,9 +139,11 @@ export async function POST(request: NextRequest) {
     // Generate invoice number
     const invoice_number = await generateInvoiceNumber();
 
-    // Calculate total amount
+    // Calculate total amount accounting for agency commission
     const total_amount = items.reduce((sum, item) => {
-      return sum + (item.quantity * item.rate);
+      const baseTotal = item.quantity * item.rate;
+      const commissionAmount = (baseTotal * (item.agency_commission || 0)) / 100;
+      return sum + (baseTotal - commissionAmount);
     }, 0);
 
     // Create the invoice with items in a transaction
@@ -159,17 +161,22 @@ export async function POST(request: NextRequest) {
 
       // Create invoice items
       const invoiceItems = await Promise.all(
-        items.map((item) =>
-          tx.invoiceItem.create({
+        items.map((item) => {
+          const baseTotal = item.quantity * item.rate;
+          const commissionAmount = (baseTotal * (item.agency_commission || 0)) / 100;
+          const total = baseTotal - commissionAmount;
+          
+          return tx.invoiceItem.create({
             data: {
               invoice_id: newInvoice.id,
               description: item.description,
               quantity: item.quantity,
               rate: item.rate,
-              total: item.quantity * item.rate,
+              total,
+              agency_commission: item.agency_commission || 0,
             },
-          })
-        )
+          });
+        })
       );
 
       return { ...newInvoice, items: invoiceItems };

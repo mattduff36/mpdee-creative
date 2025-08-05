@@ -40,6 +40,7 @@ export interface InvoiceItem {
   quantity: number;
   rate: number;
   total: number;
+  agency_commission: number;
   created_at: Date;
 }
 
@@ -85,6 +86,7 @@ export interface InvoiceItemFormData {
   description: string;
   quantity: number;
   rate: number;
+  agency_commission: number;
 }
 
 // API response types

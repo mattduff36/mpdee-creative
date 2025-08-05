@@ -5,10 +5,36 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Navigation from '../../components/accounts/Navigation';
 
+interface DashboardStats {
+  totalClients: number;
+  totalInvoices: number;
+  outstandingAmount: number;
+}
+
 export default function AccountsDashboard() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [statsLoading, setStatsLoading] = useState(true);
   const router = useRouter();
+
+  const fetchStats = async () => {
+    try {
+      const response = await fetch('/api/stats', {
+        method: 'GET',
+        credentials: 'include'
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setStats(data.data);
+      }
+    } catch (error) {
+      console.error('Error fetching stats:', error);
+    } finally {
+      setStatsLoading(false);
+    }
+  };
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -21,6 +47,8 @@ export default function AccountsDashboard() {
 
         if (response.ok) {
           setIsAuthenticated(true);
+          // Fetch stats after authentication is confirmed
+          fetchStats();
         } else {
           // Not authenticated, redirect to login
           router.push('/accounts/login');
@@ -36,6 +64,13 @@ export default function AccountsDashboard() {
 
     checkAuth();
   }, [router]);
+
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('en-GB', {
+      style: 'currency',
+      currency: 'GBP'
+    }).format(amount);
+  };
 
   // Show loading state while checking authentication
   if (isLoading) {
@@ -85,7 +120,11 @@ export default function AccountsDashboard() {
                           Total Clients
                         </dt>
                         <dd className="text-lg font-medium text-gray-900">
-                          0
+                          {statsLoading ? (
+                            <div className="animate-pulse h-6 w-8 bg-gray-200 rounded"></div>
+                          ) : (
+                            stats?.totalClients || 0
+                          )}
                         </dd>
                       </dl>
                     </div>
@@ -114,7 +153,11 @@ export default function AccountsDashboard() {
                           Total Invoices
                         </dt>
                         <dd className="text-lg font-medium text-gray-900">
-                          0
+                          {statsLoading ? (
+                            <div className="animate-pulse h-6 w-8 bg-gray-200 rounded"></div>
+                          ) : (
+                            stats?.totalInvoices || 0
+                          )}
                         </dd>
                       </dl>
                     </div>
@@ -143,7 +186,11 @@ export default function AccountsDashboard() {
                           Outstanding Amount
                         </dt>
                         <dd className="text-lg font-medium text-gray-900">
-                          £0.00
+                          {statsLoading ? (
+                            <div className="animate-pulse h-6 w-16 bg-gray-200 rounded"></div>
+                          ) : (
+                            formatCurrency(stats?.outstandingAmount || 0)
+                          )}
                         </dd>
                       </dl>
                     </div>
