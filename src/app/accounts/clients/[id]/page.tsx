@@ -49,9 +49,9 @@ export default function ClientDetailPage() {
 
   if (isLoading) {
     return (
-      <>
-        <Navigation />
-        <div className="py-10">
+          <>
+      <Navigation />
+      <div className="pt-20 pb-10">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600 mx-auto"></div>
@@ -67,7 +67,7 @@ export default function ClientDetailPage() {
     return (
       <>
         <Navigation />
-        <div className="py-10">
+        <div className="pt-20 pb-10">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center">
               <p className="text-red-600">{error || 'Client not found'}</p>

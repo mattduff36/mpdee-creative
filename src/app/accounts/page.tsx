@@ -1,22 +1,64 @@
-import { Metadata } from 'next';
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Navigation from '../../components/accounts/Navigation';
 
-export const metadata: Metadata = {
-  title: 'Dashboard | MPDEE Creative Accounting',
-  description: 'Accounting system dashboard for MPDEE Creative',
-  robots: {
-    index: false,
-    follow: false,
-  },
-};
-
 export default function AccountsDashboard() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const router = useRouter();
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        // Check if user has valid session by calling a protected API endpoint
+        const response = await fetch('/api/auth/check', {
+          method: 'GET',
+          credentials: 'include'
+        });
+
+        if (response.ok) {
+          setIsAuthenticated(true);
+        } else {
+          // Not authenticated, redirect to login
+          router.push('/accounts/login');
+          return;
+        }
+      } catch (error) {
+        // Error checking auth, redirect to login
+        router.push('/accounts/login');
+        return;
+      }
+      setIsLoading(false);
+    };
+
+    checkAuth();
+  }, [router]);
+
+  // Show loading state while checking authentication
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600 mx-auto"></div>
+          <p className="mt-2 text-sm text-gray-600">Checking authentication...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Only render dashboard if authenticated
+  if (!isAuthenticated) {
+    return null; // Will redirect in useEffect
+  }
+
   return (
     <>
       <Navigation />
       
-      <div className="py-10">
+      <div className="pt-20 pb-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="md:flex md:items-center md:justify-between">
             <div className="flex-1 min-w-0">
