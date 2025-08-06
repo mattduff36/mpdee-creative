@@ -83,4 +83,7 @@ The navigation uses smooth scrolling to jump between sections on the same page:
 
 ## License
 
-© 2025 MPDEE Creative. All rights reserved. 
+© 2025 MPDEE Creative. All rights reserved.
+
+## Last Updated
+January 2025 - Address configuration updated 
