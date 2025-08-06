@@ -60,7 +60,7 @@ export async function sendInvoiceEmail(invoiceId: string): Promise<boolean> {
         name: process.env.COMPANY_NAME || 'MPDEE Creative',
         email: process.env.COMPANY_EMAIL || 'matt.mpdee@gmail.com',
         phone: process.env.COMPANY_PHONE,
-        address: process.env.COMPANY_ADDRESS,
+        address: '6 Brocklehurst Drive, Edwinstowe, Mansfield, Notts. NG21 9JW',
       },
     });
 
