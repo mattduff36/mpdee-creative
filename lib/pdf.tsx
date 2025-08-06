@@ -67,16 +67,11 @@ export async function generateInvoicePDF(data: InvoicePDFData): Promise<ArrayBuf
     // Move to next section with proper spacing after logo
     yPos += logoHeight + 10;
 
-    // Company address only (removed email and phone)
-    if (company.address) {
-      doc.setFontSize(9); // Smaller font for company address
-      doc.setTextColor(...grayColor);
-      const addressLines = company.address.split('\n');
-      addressLines.forEach((line) => {
-        doc.text(line, 20, yPos);
-        yPos += 4; // Reduced line spacing
-      });
-    }
+    // Company address (hardcoded on single line)
+    doc.setFontSize(9); // Smaller font for company address
+    doc.setTextColor(...grayColor);
+    doc.text('6 Brocklehurst Drive, Edwinstowe, Mansfield, Notts. NG21 9JW', 20, yPos);
+    yPos += 4; // Single line spacing
 
     // Reduced spacing after company details
     yPos += 8;
