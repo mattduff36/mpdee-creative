@@ -68,6 +68,12 @@ export default function Navigation() {
               >
                 Invoices
               </Link>
+              <Link
+                href="/accounts/expenses"
+                className="text-gray-500 hover:text-gray-700 px-3 py-2 rounded-md text-sm font-medium"
+              >
+                Expenses
+              </Link>
             </nav>
 
             <button

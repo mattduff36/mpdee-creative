@@ -41,6 +41,7 @@ export interface InvoiceItem {
   rate: number;
   total: number;
   agency_commission: number;
+  business_area: BusinessArea;
   created_at: Date;
 }
 
@@ -87,7 +88,23 @@ export interface InvoiceItemFormData {
   quantity: number;
   rate: number;
   agency_commission: number;
+  business_area: BusinessArea;
 }
+
+export interface Expense {
+  id: string;
+  description: string;
+  amount: number;
+  category: string;
+  date: Date;
+  business_area: BusinessArea;
+  receipt_url: string | null;
+  notes: string | null;
+  created_at: Date;
+  updated_at: Date;
+}
+
+export type BusinessArea = 'CREATIVE' | 'DEVELOPMENT' | 'SUPPORT';
 
 // API response types
 export interface ApiResponse<T = any> {

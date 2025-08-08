@@ -7,6 +7,7 @@ interface DashboardStats {
   totalClients: number;
   totalInvoices: number;
   outstandingAmount: number;
+  totalExpenses: number;
 }
 
 // GET /api/stats - Get dashboard statistics
@@ -38,10 +39,14 @@ export async function GET() {
       0
     );
 
+    // Total expenses count
+    const totalExpenses = await prisma.expense.count();
+
     const stats: DashboardStats = {
       totalClients,
       totalInvoices,
       outstandingAmount,
+      totalExpenses,
     };
 
     const response: ApiResponse<DashboardStats> = {

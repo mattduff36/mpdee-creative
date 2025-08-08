@@ -9,6 +9,7 @@ interface DashboardStats {
   totalClients: number;
   totalInvoices: number;
   outstandingAmount: number;
+  totalExpenses: number;
 }
 
 export default function AccountsDashboard() {
@@ -104,7 +105,7 @@ export default function AccountsDashboard() {
           </div>
 
           <div className="mt-8">
-            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
               {/* Quick Stats Cards */}
               <div className="bg-white overflow-hidden shadow rounded-lg">
                 <div className="p-5">
@@ -204,6 +205,39 @@ export default function AccountsDashboard() {
                   </div>
                 </div>
               </div>
+
+              <div className="bg-white overflow-hidden shadow rounded-lg">
+                <div className="p-5">
+                  <div className="flex items-center">
+                    <div className="flex-shrink-0">
+                      <div className="w-8 h-8 bg-orange-500 rounded-md flex items-center justify-center">
+                        <span className="text-white text-sm font-medium">E</span>
+                      </div>
+                    </div>
+                    <div className="ml-5 w-0 flex-1">
+                      <dl>
+                        <dt className="text-sm font-medium text-gray-500 truncate">
+                          Total Expenses
+                        </dt>
+                        <dd className="text-lg font-medium text-gray-900">
+                          {statsLoading ? (
+                            <div className="animate-pulse h-6 w-8 bg-gray-200 rounded"></div>
+                          ) : (
+                            stats?.totalExpenses || 0
+                          )}
+                        </dd>
+                      </dl>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-gray-50 px-5 py-3">
+                  <div className="text-sm">
+                    <Link href="/accounts/expenses" className="font-medium text-orange-700 hover:text-orange-900">
+                      View all expenses
+                    </Link>
+                  </div>
+                </div>
+              </div>
             </div>
 
             {/* Quick Actions */}
@@ -230,6 +264,28 @@ export default function AccountsDashboard() {
                     </h3>
                     <p className="mt-2 text-sm text-gray-500">
                       Create a new client record for invoicing
+                    </p>
+                  </div>
+                </Link>
+
+                <Link
+                  href="/accounts/expenses"
+                  className="relative group bg-white p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-orange-500 rounded-lg shadow hover:shadow-md transition-shadow"
+                >
+                  <div>
+                    <span className="rounded-lg inline-flex p-3 bg-orange-50 text-orange-700 ring-4 ring-white">
+                      <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                      </svg>
+                    </span>
+                  </div>
+                  <div className="mt-8">
+                    <h3 className="text-lg font-medium">
+                      <span className="absolute inset-0" aria-hidden="true" />
+                      Track Expenses
+                    </h3>
+                    <p className="mt-2 text-sm text-gray-500">
+                      Record and manage business expenses
                     </p>
                   </div>
                 </Link>

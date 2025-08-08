@@ -174,6 +174,7 @@ export async function POST(request: NextRequest) {
               rate: item.rate,
               total,
               agency_commission: item.agency_commission || 0,
+              business_area: (item as any).business_area || 'CREATIVE',
             },
           });
         })
