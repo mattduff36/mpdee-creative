@@ -43,9 +43,13 @@ export default function Navigation() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
-            <h1 className="text-xl font-semibold text-gray-900">
-              MPDEE Creative Accounting
-            </h1>
+            <Link href="/accounts" className="inline-flex items-center">
+              <img
+                src="/images/logo-trans.png"
+                alt="MPDEE Creative"
+                className="h-8 w-auto"
+              />
+            </Link>
           </div>
 
           <div className="flex items-center space-x-4">

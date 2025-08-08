@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Client, InvoiceWithDetails, InvoiceFormData, InvoiceItemFormData, PaginatedResponse } from '../../../lib/types';
+import { AdjustmentsHorizontalIcon, TrashIcon } from '@heroicons/react/24/outline';
 
 interface InvoiceFormProps {
   invoice?: InvoiceWithDetails;
@@ -15,7 +16,7 @@ export default function InvoiceForm({ invoice, onSuccess, onCancel }: InvoiceFor
   const [formData, setFormData] = useState<InvoiceFormData>({
     client_id: '',
     due_date: '',
-    items: [{ description: '', quantity: 1, rate: 0, agency_commission: 0, business_area: 'CREATIVE' }],
+    items: [{ description: '', quantity: '', rate: '', agency_commission: 0, business_area: 'CREATIVE' }],
   });
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingClients, setIsLoadingClients] = useState(true);
@@ -90,7 +91,7 @@ export default function InvoiceForm({ invoice, onSuccess, onCancel }: InvoiceFor
   const addItem = () => {
     setFormData(prev => ({
       ...prev,
-      items: [...prev.items, { description: '', quantity: 1, rate: 0, agency_commission: 0, business_area: 'CREATIVE' }],
+      items: [...prev.items, { description: '', quantity: '', rate: '', agency_commission: 0, business_area: 'CREATIVE' }],
     }));
   };
 
@@ -117,8 +118,11 @@ export default function InvoiceForm({ invoice, onSuccess, onCancel }: InvoiceFor
   };
 
   const calculateItemTotal = (item: InvoiceItemFormData) => {
-    const baseTotal = item.quantity * item.rate;
-    const commissionAmount = (baseTotal * item.agency_commission) / 100;
+    const qty = typeof item.quantity === 'number' ? item.quantity : 0;
+    const rate = typeof item.rate === 'number' ? item.rate : 0;
+    const commissionPct = typeof item.agency_commission === 'number' ? item.agency_commission : 0;
+    const baseTotal = qty * rate;
+    const commissionAmount = (baseTotal * commissionPct) / 100;
     return baseTotal - commissionAmount;
   };
 
@@ -189,7 +193,7 @@ export default function InvoiceForm({ invoice, onSuccess, onCancel }: InvoiceFor
   }
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="max-w-6xl mx-auto">
       <div className="bg-white shadow rounded-lg">
         <div className="px-6 py-4 border-b border-gray-200">
           <h2 className="text-lg font-medium text-gray-900">
@@ -264,7 +268,7 @@ export default function InvoiceForm({ invoice, onSuccess, onCancel }: InvoiceFor
               {formData.items.map((item, index) => (
                 <div key={index} className="bg-gray-50 p-4 rounded-lg">
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-12">
-                    <div className="sm:col-span-5">
+                    <div className="sm:col-span-5 min-w-0">
                       <label className="block text-sm font-medium text-gray-700">
                         Description *
                       </label>
@@ -279,35 +283,41 @@ export default function InvoiceForm({ invoice, onSuccess, onCancel }: InvoiceFor
                       />
                     </div>
 
-                    <div className="sm:col-span-2">
+                    <div className="sm:col-span-1">
                       <label className="block text-sm font-medium text-gray-700">
                         Quantity *
                       </label>
                       <input
                         type="number"
-                        required
-                        min="0.01"
+                        inputMode="decimal"
+                        min="0"
                         step="0.01"
-                        className="mt-1 block w-full px-3 py-2 border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        value={item.quantity}
-                        onChange={(e) => handleItemChange(index, 'quantity', parseFloat(e.target.value) || 0)}
+                        className="mt-1 block w-full px-2 py-2 border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-right"
+                        value={item.quantity === '' ? '' : item.quantity}
+                        onChange={(e) => {
+                          const v = e.target.value;
+                          handleItemChange(index, 'quantity', v === '' ? '' : parseFloat(v));
+                        }}
                         disabled={isLoading}
                       />
                     </div>
 
-                    <div className="sm:col-span-2">
+                    <div className="sm:col-span-1">
                       <label className="block text-sm font-medium text-gray-700">
                         Rate *
                       </label>
                       <input
                         type="number"
-                        required
-                        min="0.01"
+                        inputMode="decimal"
+                        min="0"
                         step="0.01"
-                        className="mt-1 block w-full px-3 py-2 border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                        className="mt-1 block w-full px-2 py-2 border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-right"
                         placeholder="0.00"
-                        value={item.rate}
-                        onChange={(e) => handleItemChange(index, 'rate', parseFloat(e.target.value) || 0)}
+                        value={item.rate === '' ? '' : item.rate}
+                        onChange={(e) => {
+                          const v = e.target.value;
+                          handleItemChange(index, 'rate', v === '' ? '' : parseFloat(v));
+                        }}
                         disabled={isLoading}
                       />
                     </div>
@@ -332,11 +342,11 @@ export default function InvoiceForm({ invoice, onSuccess, onCancel }: InvoiceFor
                       <label className="block text-sm font-medium text-gray-700">
                         Total
                       </label>
-                      <div className="mt-1 px-3 py-2 bg-gray-100 border border-gray-300 rounded-md text-sm text-gray-900">
-                        {item.agency_commission > 0 ? (
+                      <div className="mt-1 px-2 py-2 bg-gray-100 border border-gray-300 rounded-md text-sm text-gray-900 text-right">
+                        {((typeof item.agency_commission === 'number' ? item.agency_commission : 0) > 0) ? (
                           <div>
                             <div className="text-xs text-gray-500 line-through">
-                              {formatCurrency(item.quantity * item.rate)}
+                              {formatCurrency((typeof item.quantity === 'number' ? item.quantity : 0) * (typeof item.rate === 'number' ? item.rate : 0))}
                             </div>
                             <div className="text-xs text-orange-600">
                               -{item.agency_commission}% agency commission
@@ -352,23 +362,29 @@ export default function InvoiceForm({ invoice, onSuccess, onCancel }: InvoiceFor
                     </div>
 
                     <div className="sm:col-span-1 flex items-end">
-                      <div className="space-y-1">
+                      <div className="flex items-center gap-2">
                         <button
                           type="button"
                           onClick={() => openAgencyModal(index)}
                           disabled={isLoading}
-                          className="block text-blue-600 hover:text-blue-900 text-xs font-medium disabled:opacity-50"
+                          className="p-2 rounded text-blue-600 hover:text-blue-900 hover:bg-blue-50 disabled:opacity-50"
+                          title="Set agency commission"
+                          aria-label="Set agency commission"
                         >
-                          agency?
+                          <AdjustmentsHorizontalIcon className="h-5 w-5" />
+                          <span className="sr-only">Set agency commission</span>
                         </button>
                         {formData.items.length > 1 && (
                           <button
                             type="button"
                             onClick={() => removeItem(index)}
                             disabled={isLoading}
-                            className="block text-red-600 hover:text-red-900 text-xs font-medium disabled:opacity-50"
+                            className="p-2 rounded text-red-600 hover:text-red-900 hover:bg-red-50 disabled:opacity-50"
+                            title="Remove item"
+                            aria-label="Remove item"
                           >
-                            Remove
+                            <TrashIcon className="h-5 w-5" />
+                            <span className="sr-only">Remove item</span>
                           </button>
                         )}
                       </div>

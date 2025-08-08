@@ -85,9 +85,9 @@ export interface InvoiceFormData {
 
 export interface InvoiceItemFormData {
   description: string;
-  quantity: number;
-  rate: number;
-  agency_commission: number;
+  quantity: number | '';
+  rate: number | '';
+  agency_commission: number | '';
   business_area: BusinessArea;
 }
 
