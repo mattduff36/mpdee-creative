@@ -435,7 +435,11 @@ export default function InvoiceForm({ invoice, onSuccess, onCancel }: InvoiceFor
       {/* Agency Commission Modal */}
       {showAgencyModal && (
         <AgencyCommissionModal
-          currentPercentage={selectedItemIndex !== null ? formData.items[selectedItemIndex].agency_commission : 0}
+          currentPercentage={selectedItemIndex !== null
+            ? (typeof formData.items[selectedItemIndex].agency_commission === 'number'
+                ? formData.items[selectedItemIndex].agency_commission
+                : 0)
+            : 0}
           onSave={handleAgencyCommissionSave}
           onCancel={() => {
             setShowAgencyModal(false);

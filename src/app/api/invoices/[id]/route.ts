@@ -65,6 +65,14 @@ export async function PUT(
     const body = await request.json();
     const { client_id, due_date, items }: InvoiceFormData = body;
 
+    // Normalize numeric fields that may be empty strings from the UI
+    const normalizedItems = (items || []).map((item) => {
+      const quantity = typeof item.quantity === 'number' ? item.quantity : parseFloat(String(item.quantity)) || 0;
+      const rate = typeof item.rate === 'number' ? item.rate : parseFloat(String(item.rate)) || 0;
+      const agency_commission = typeof item.agency_commission === 'number' ? item.agency_commission : parseFloat(String(item.agency_commission)) || 0;
+      return { ...item, quantity, rate, agency_commission } as typeof item & { quantity: number; rate: number; agency_commission: number };
+    });
+
     // Check if invoice exists
     const existingInvoice = await prisma.invoice.findUnique({
       where: { id },
@@ -86,7 +94,7 @@ export async function PUT(
     }
 
     // Validate required fields
-    if (!client_id || !items || items.length === 0) {
+    if (!client_id || !normalizedItems || normalizedItems.length === 0) {
       return NextResponse.json(
         { success: false, error: 'Client and at least one item are required' },
         { status: 400 }
@@ -106,7 +114,7 @@ export async function PUT(
     }
 
     // Validate items
-    for (const item of items) {
+    for (const item of normalizedItems) {
       if (!item.description || item.quantity <= 0 || item.rate <= 0) {
         return NextResponse.json(
           { success: false, error: 'All items must have description, quantity > 0, and rate > 0' },
@@ -116,7 +124,7 @@ export async function PUT(
     }
 
     // Calculate total amount accounting for agency commission
-    const total_amount = items.reduce((sum, item) => {
+    const total_amount = normalizedItems.reduce((sum, item) => {
       const baseTotal = item.quantity * item.rate;
       const commissionAmount = (baseTotal * (item.agency_commission || 0)) / 100;
       return sum + (baseTotal - commissionAmount);
@@ -140,8 +148,8 @@ export async function PUT(
       });
 
       // Create new invoice items
-      const invoiceItems = await Promise.all(
-        items.map((item) => {
+        const invoiceItems = await Promise.all(
+        normalizedItems.map((item) => {
           const baseTotal = item.quantity * item.rate;
           const commissionAmount = (baseTotal * (item.agency_commission || 0)) / 100;
           const total = baseTotal - commissionAmount;
