@@ -3,6 +3,13 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import {
+  HomeIcon,
+  UsersIcon,
+  DocumentTextIcon,
+  BanknotesIcon,
+  ArrowRightStartOnRectangleIcon,
+} from '@heroicons/react/24/outline';
 
 export default function Navigation() {
   const [isLoggingOut, setIsLoggingOut] = useState(false);
@@ -52,8 +59,9 @@ export default function Navigation() {
             </Link>
           </div>
 
-          <div className="flex items-center space-x-4">
-            <nav className="flex space-x-8">
+			<div className="flex items-center space-x-4 w-full justify-end">
+				{/* Desktop nav */}
+				<nav className="hidden sm:flex space-x-8">
               <Link
                 href="/accounts"
                 className="text-gray-500 hover:text-gray-700 px-3 py-2 rounded-md text-sm font-medium"
@@ -80,20 +88,45 @@ export default function Navigation() {
               </Link>
             </nav>
 
-            <button
-              onClick={handleLogout}
-              disabled={isLoggingOut}
-              className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isLoggingOut ? (
-                <div className="flex items-center">
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                  Logging out...
-                </div>
-              ) : (
-                'Logout'
-              )}
-            </button>
+				{/* Mobile icon nav */}
+				<nav className="flex sm:hidden items-center gap-2">
+					<Link href="/accounts" aria-label="Dashboard" className="p-2 rounded-md bg-indigo-50 text-indigo-600 hover:bg-indigo-100">
+						<HomeIcon className="h-5 w-5" />
+					</Link>
+					<Link href="/accounts/clients" aria-label="Clients" className="p-2 rounded-md bg-blue-50 text-blue-600 hover:bg-blue-100">
+						<UsersIcon className="h-5 w-5" />
+					</Link>
+					<Link href="/accounts/invoices" aria-label="Invoices" className="p-2 rounded-md bg-green-50 text-green-600 hover:bg-green-100">
+						<DocumentTextIcon className="h-5 w-5" />
+					</Link>
+					<Link href="/accounts/expenses" aria-label="Expenses" className="p-2 rounded-md bg-orange-50 text-orange-600 hover:bg-orange-100">
+						<BanknotesIcon className="h-5 w-5" />
+					</Link>
+				</nav>
+
+				{/* Logout button (text on desktop, icon on mobile) */}
+				<button
+					onClick={handleLogout}
+					disabled={isLoggingOut}
+					className="hidden sm:inline-flex bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+				>
+					{isLoggingOut ? (
+						<div className="flex items-center">
+							<div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+							Logging out...
+						</div>
+					) : (
+						'Logout'
+					)}
+				</button>
+				<button
+					onClick={handleLogout}
+					disabled={isLoggingOut}
+					aria-label="Logout"
+					className="sm:hidden p-2 rounded-md bg-red-50 text-red-600 hover:bg-red-100 disabled:opacity-50 disabled:cursor-not-allowed"
+				>
+					<ArrowRightStartOnRectangleIcon className="h-5 w-5" />
+				</button>
           </div>
         </div>
       </div>
