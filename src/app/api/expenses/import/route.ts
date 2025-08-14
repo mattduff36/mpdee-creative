@@ -36,7 +36,13 @@ export async function POST(request: NextRequest) {
       data: { filename: file.name },
     });
 
-    const toCreate = [] as Array<Parameters<typeof prisma.bankTransaction.create>[0]['data']>;
+    const toCreate: {
+      import_id: string;
+      date: Date;
+      description: string;
+      amount: number;
+      raw?: any;
+    }[] = [];
 
     function parseDate(input?: string) {
       if (!input) return null;
