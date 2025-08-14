@@ -90,3 +90,34 @@ enum BusinessArea {
   DEVELOPMENT
   SUPPORT
 }
+
+/// Bank statement CSV imports and parsed transactions
+model BankStatementImport {
+  id           String            @id @default(cuid())
+  filename     String?
+  uploaded_at  DateTime          @default(now())
+  transactions BankTransaction[]
+
+  @@map("bank_statement_imports")
+}
+
+model BankTransaction {
+  id          String               @id @default(cuid())
+  import_id   String
+  date        DateTime
+  description String
+  amount      Float
+  raw         Json?
+  status      TransactionStatus    @default(PENDING)
+  expense_id  String?
+
+  import      BankStatementImport  @relation(fields: [import_id], references: [id], onDelete: Cascade)
+
+  @@map("bank_transactions")
+}
+
+enum TransactionStatus {
+  PENDING
+  ADDED
+  IGNORED
+}
