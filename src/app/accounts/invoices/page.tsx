@@ -8,7 +8,8 @@ import {
   PencilIcon, 
   PaperAirplaneIcon, 
   ArrowDownTrayIcon, 
-  TrashIcon 
+  TrashIcon,
+  CheckCircleIcon
 } from '@heroicons/react/24/outline';
 
 export default function InvoicesPage() {
@@ -21,6 +22,7 @@ export default function InvoicesPage() {
   const [total, setTotal] = useState(0);
   const [deleteInvoiceId, setDeleteInvoiceId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [updatingStatusId, setUpdatingStatusId] = useState<string | null>(null);
   const router = useRouter();
 
   const limit = 10;
@@ -64,6 +66,35 @@ export default function InvoicesPage() {
   const handleStatusFilter = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setStatusFilter(e.target.value as InvoiceStatus | '');
     setPage(1); // Reset to first page when filtering
+  };
+
+  const handleMarkAsPaid = async (invoiceId: string) => {
+    if (!confirm('Mark this invoice as paid?')) return;
+    
+    setUpdatingStatusId(invoiceId);
+    try {
+      const response = await fetch(`/api/invoices/${invoiceId}/status`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({ status: InvoiceStatus.PAID }),
+      });
+
+      const data = await response.json();
+      if (response.ok && data.success) {
+        // Refresh the invoices list
+        fetchInvoices();
+      } else {
+        setError(data.error || 'Failed to update invoice status');
+      }
+    } catch (error) {
+      console.error('Error updating invoice status:', error);
+      setError('Failed to update invoice status');
+    } finally {
+      setUpdatingStatusId(null);
+    }
   };
 
   const handleDelete = async (invoiceId: string) => {
@@ -262,6 +293,20 @@ export default function InvoicesPage() {
                                 title="Send Invoice"
                               >
                                 <PaperAirplaneIcon className="h-5 w-5" />
+                              </button>
+                            )}
+                            {(invoice.status === InvoiceStatus.SENT || invoice.status === InvoiceStatus.OVERDUE) && (
+                              <button
+                                onClick={() => handleMarkAsPaid(invoice.id)}
+                                disabled={updatingStatusId === invoice.id}
+                                className="text-green-600 hover:text-green-900 p-1 rounded hover:bg-green-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                title="Mark as Paid"
+                              >
+                                {updatingStatusId === invoice.id ? (
+                                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-green-600"></div>
+                                ) : (
+                                  <CheckCircleIcon className="h-5 w-5" />
+                                )}
                               </button>
                             )}
                             <button
