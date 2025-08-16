@@ -114,6 +114,7 @@ export interface ApiResponse<T = any> {
 }
 
 export interface PaginatedResponse<T> {
+  success: boolean;
   data: T[];
   total: number;
   page: number;

@@ -34,7 +34,7 @@ export default function ClientsPage() {
       const response = await fetch(`/api/clients?${params}`);
       const data: PaginatedResponse<Client> = await response.json();
 
-      if (response.ok) {
+      if (response.ok && data.success) {
         setClients(data.data);
         setTotal(data.total);
       } else {

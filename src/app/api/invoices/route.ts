@@ -73,6 +73,7 @@ export async function GET(request: NextRequest) {
     });
 
     const response: PaginatedResponse<InvoiceWithClient> = {
+      success: true,
       data: invoices,
       total,
       page,

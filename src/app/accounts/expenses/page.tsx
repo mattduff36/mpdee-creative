@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import Navigation from '../../../components/accounts/Navigation';
 import { Expense } from '../../../../lib/types';
+import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 
 export default function ExpensesPage() {
   const [expenses, setExpenses] = useState<Expense[]>([]);
@@ -45,6 +46,28 @@ export default function ExpensesPage() {
       setError('Failed to load expenses');
     } finally {
       setIsLoading(false);
+    }
+  }
+
+  async function handleDelete(expenseId: string) {
+    if (!confirm('Are you sure you want to delete this expense?')) return;
+    
+    try {
+      const res = await fetch(`/api/expenses/${expenseId}`, {
+        method: 'DELETE',
+        credentials: 'include'
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        // Refresh the expenses list
+        fetchExpenses();
+      } else if (res.status === 401) {
+        window.location.href = '/accounts/login';
+      } else {
+        setError(data.error || 'Failed to delete expense');
+      }
+    } catch (e) {
+      setError('Failed to delete expense');
     }
   }
 
@@ -143,6 +166,22 @@ export default function ExpensesPage() {
                             <span>{formatDate(exp.date)}</span>
                             {exp.notes ? (<><span>•</span><span className="truncate">{exp.notes}</span></>) : null}
                           </div>
+                        </div>
+                        <div className="flex items-center space-x-2 ml-4">
+                          <Link
+                            href={`/accounts/expenses/${exp.id}`}
+                            className="text-indigo-600 hover:text-indigo-900 p-1"
+                            title="Edit expense"
+                          >
+                            <PencilIcon className="h-4 w-4" />
+                          </Link>
+                          <button
+                            onClick={() => handleDelete(exp.id)}
+                            className="text-red-600 hover:text-red-900 p-1"
+                            title="Delete expense"
+                          >
+                            <TrashIcon className="h-4 w-4" />
+                          </button>
                         </div>
                       </div>
                     </li>

@@ -38,7 +38,7 @@ export default function InvoicesPage() {
       const response = await fetch(`/api/invoices?${params}`);
       const data: PaginatedResponse<InvoiceWithClient> = await response.json();
 
-      if (response.ok) {
+      if (response.ok && data.success) {
         setInvoices(data.data);
         setTotal(data.total);
       } else {

@@ -37,6 +37,7 @@ export async function GET(request: NextRequest) {
     });
 
     const response: PaginatedResponse<Client> = {
+      success: true,
       data: clients,
       total,
       page,
