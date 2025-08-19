@@ -2,6 +2,14 @@
 
 import { useState, useEffect, useMemo } from 'react';
 
+// Global function declarations for analytics tracking
+declare global {
+  interface Window {
+    trackConversion?: (action: string) => void;
+    trackHubReferral?: () => void;
+  }
+}
+
 interface NavigationProps {
   logo?: string;
 }
@@ -18,6 +26,17 @@ const Navigation = ({ }: NavigationProps) => {
       { name: 'Services', href: '#services', id: 'services' },
       { name: 'Client Login', href: '#client-login', id: 'client-login' },
       { name: 'Contact', href: '#contact', id: 'contact' },
+      { 
+        name: 'All MPDEE Services', 
+        href: 'https://mpdee.co.uk', 
+        id: 'hub',
+        external: true,
+        onClick: () => {
+          if (typeof window !== 'undefined' && window.trackHubReferral) {
+            window.trackHubReferral();
+          }
+        }
+      },
     ],
     []
   );
@@ -118,17 +137,30 @@ const Navigation = ({ }: NavigationProps) => {
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
             {navigationItems.map((item) => (
-              <button
-                key={item.name}
-                onClick={() => handleNavClick(item.href, item.id)}
-                className={`text-sm font-medium transition-colors duration-200 hover:text-blue-600 ${
-                  activeSection === item.id 
-                    ? 'text-blue-600' 
-                    : 'text-gray-700'
-                }`}
-              >
-                {item.name}
-              </button>
+              item.external ? (
+                <a
+                  key={item.name}
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={item.onClick}
+                  className="text-sm font-medium transition-colors duration-200 hover:text-blue-600 text-gray-700 border border-blue-600 px-3 py-1 rounded-md hover:bg-blue-50"
+                >
+                  {item.name}
+                </a>
+              ) : (
+                <button
+                  key={item.name}
+                  onClick={() => handleNavClick(item.href, item.id)}
+                  className={`text-sm font-medium transition-colors duration-200 hover:text-blue-600 ${
+                    activeSection === item.id 
+                      ? 'text-blue-600' 
+                      : 'text-gray-700'
+                  }`}
+                >
+                  {item.name}
+                </button>
+              )
             ))}
           </div>
 

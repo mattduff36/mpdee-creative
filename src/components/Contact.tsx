@@ -29,17 +29,18 @@ const Contact: React.FC = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
+    // Track contact form submission
+    if (typeof window !== 'undefined' && window.trackConversion) {
+      window.trackConversion('contact_form_submit');
+    }
+
     // Simulate form submission
     await new Promise(resolve => setTimeout(resolve, 1000));
     
     setIsSubmitting(false);
-    setSubmitted(true);
     
-    // Reset form after success
-    setFormData({ name: '', email: '', subject: '', message: '' });
-    
-    // Reset success message after 5 seconds
-    setTimeout(() => setSubmitted(false), 5000);
+    // Redirect to hub confirmation page
+    window.location.href = 'https://mpdee.co.uk/contact-received';
   };
 
   if (!isClient) {
