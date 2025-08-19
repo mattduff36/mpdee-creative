@@ -104,7 +104,7 @@ const Navigation = ({ }: NavigationProps) => {
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-sm border-b border-gray-200/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
+            <div className="flex items-center gap-3">
               <Image
                 src="/images/MPDEE-Creative-logo.png"
                 alt="MPDEE Creative Logo"
@@ -113,6 +113,9 @@ const Navigation = ({ }: NavigationProps) => {
                 className="h-8 w-auto"
                 priority
               />
+              <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                Creative
+              </span>
             </div>
           </div>
         </div>
@@ -131,7 +134,7 @@ const Navigation = ({ }: NavigationProps) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <div className="cursor-pointer flex items-center" 
+          <div className="cursor-pointer flex items-center gap-3" 
                onClick={() => handleNavClick('#', 'home')}>
             <Image
               src="/images/MPDEE-Creative-logo.png"
@@ -141,6 +144,9 @@ const Navigation = ({ }: NavigationProps) => {
               className="h-8 w-auto"
               priority
             />
+            <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              Creative
+            </span>
           </div>
 
           {/* Desktop Navigation */}
