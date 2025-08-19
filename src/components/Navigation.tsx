@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
+import Image from 'next/image';
 
 // Global function declarations for analytics tracking
 declare global {
@@ -103,11 +104,15 @@ const Navigation = ({ }: NavigationProps) => {
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-sm border-b border-gray-200/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="font-bold text-xl text-gray-900">
-              MPDEE{' '}
-              <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                Creative
-              </span>
+            <div className="flex items-center">
+              <Image
+                src="/images/MPDEE-Creative-logo.png"
+                alt="MPDEE Creative Logo"
+                width={120}
+                height={40}
+                className="h-8 w-auto"
+                priority
+              />
             </div>
           </div>
         </div>
@@ -126,12 +131,16 @@ const Navigation = ({ }: NavigationProps) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <div className="font-bold text-xl text-gray-900 cursor-pointer" 
+          <div className="cursor-pointer flex items-center" 
                onClick={() => handleNavClick('#', 'home')}>
-            MPDEE{' '}
-            <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              Creative
-            </span>
+            <Image
+              src="/images/MPDEE-Creative-logo.png"
+              alt="MPDEE Creative Logo"
+              width={120}
+              height={40}
+              className="h-8 w-auto"
+              priority
+            />
           </div>
 
           {/* Desktop Navigation */}
