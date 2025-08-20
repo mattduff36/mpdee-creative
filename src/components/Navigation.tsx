@@ -230,17 +230,30 @@ const Navigation = ({ }: NavigationProps) => {
         <div className="md:hidden bg-white border-t border-gray-200">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             {navigationItems.map((item) => (
-              <button
-                key={item.name}
-                onClick={() => handleNavClick(item.href, item.id)}
-                className={`block w-full text-left px-3 py-2 rounded-md text-base font-medium transition-colors duration-200 hover:text-blue-600 hover:bg-gray-50 ${
-                  activeSection === item.id 
-                    ? 'text-blue-600 bg-blue-50' 
-                    : 'text-gray-700'
-                }`}
-              >
-                {item.name}
-              </button>
+              item.external ? (
+                <a
+                  key={item.name}
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={item.onClick}
+                  className="block w-full text-left px-3 py-2 rounded-md text-base font-medium transition-colors duration-200 hover:text-blue-600 hover:bg-gray-50 text-gray-700 border border-blue-600 hover:bg-blue-50"
+                >
+                  {item.name}
+                </a>
+              ) : (
+                <button
+                  key={item.name}
+                  onClick={() => handleNavClick(item.href, item.id)}
+                  className={`block w-full text-left px-3 py-2 rounded-md text-base font-medium transition-colors duration-200 hover:text-blue-600 hover:bg-gray-50 ${
+                    activeSection === item.id 
+                      ? 'text-blue-600 bg-blue-50' 
+                      : 'text-gray-700'
+                  }`}
+                >
+                  {item.name}
+                </button>
+              )
             ))}
           </div>
         </div>
