@@ -1,4 +1,4 @@
-import { Hero, Services, ClientLogin, Contact } from '@/components';
+import { Hero, Services, ClientLogin, Contact, ConstructionBanner } from '@/components';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -49,6 +49,9 @@ export const metadata: Metadata = {
 export default function Home() {
   return (
     <>
+      {/* Construction Banner */}
+      <ConstructionBanner className="mt-16" />
+
       {/* Hero Section */}
       <Hero />
 
