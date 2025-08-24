@@ -1,0 +1,337 @@
+## Relevant Files
+
+- `src/app/accounts/` - Entire accounts route directory to be removed
+- `src/app/api/auth/` - Authentication API endpoints to be removed
+- `src/app/api/clients/` - Client management API endpoints to be removed
+- `src/app/api/invoices/` - Invoice management API endpoints to be removed
+- `src/app/api/expenses/` - Expense tracking API endpoints to be removed
+- `src/app/api/stats/` - Dashboard statistics API endpoints to be removed
+- `src/components/accounts/` - Account-related React components to be removed
+- `src/components/Navigation.tsx` - Main navigation component to remove accounts links
+- `lib/auth.ts` - JWT authentication library to be removed
+- `lib/db.ts` - Prisma database utilities to be removed
+- `lib/pdf.tsx` - PDF generation library to be removed
+- `lib/email.ts` - Email notification library to be removed
+- `lib/types.ts` - TypeScript types to be cleaned of account-related interfaces
+- `prisma/schema.prisma` - Database schema to be cleaned of account models
+- `package.json` - Dependencies to be removed (prisma, bcryptjs, jose, etc.)
+- `next.config.js` - Configuration to be cleaned of Prisma references
+- `middleware.ts` - Middleware to be cleaned of authentication logic
+- `.env` - Environment variables to be cleaned of database and auth variables
+
+### Notes
+
+- All account-related functionality will be completely removed from the codebase
+- Database tables will be dropped via Prisma migration
+- Dependencies will be removed and node_modules updated
+- Navigation will be simplified to focus only on audio production services
+- The site will become a static showcase without database dependencies
+
+## Tasks
+
+- [x] 1.0 Preparation and Backup
+  - [x] 1.1 Create git branch for accounts removal work
+    - Create new branch: `git checkout -b remove-accounts-system`
+    - Push branch to remote: `git push -u origin remove-accounts-system`
+  - [x] 1.2 Document current accounts functionality
+    - List all accounts routes and their purposes
+    - Document database models and relationships
+    - Note all API endpoints and their functions
+    - Create inventory of components and their dependencies
+  - [x] 1.3 Backup database schema and data
+    - Export current Prisma schema: `cp prisma/schema.prisma prisma/schema.prisma.backup`
+    - Create database backup if needed
+    - Document current database state
+  - [x] 1.4 Audit all references to accounts functionality
+    - Search codebase for imports from accounts components
+    - Find all navigation links to accounts pages
+    - Identify any hardcoded references to accounts routes
+    - Check for any middleware or configuration references
+  - [x] 1.5 Identify all dependencies and package requirements
+    - List all npm packages related to accounts functionality
+    - Document environment variables used by accounts system
+    - Note any external service dependencies
+    - Create complete dependency tree
+
+- [x] 2.0 Remove Frontend Components
+  - [x] 2.1 Remove `/src/app/accounts/` directory and all subdirectories
+    - Delete `/src/app/accounts/page.tsx` (main accounts dashboard)
+    - Delete `/src/app/accounts/login/page.tsx` (login page)
+    - Delete `/src/app/accounts/clients/` directory (client management)
+    - Delete `/src/app/accounts/invoices/` directory (invoice management)
+    - Delete `/src/app/accounts/expenses/` directory (expense management)
+    - Delete `/src/app/accounts/layout.tsx` (accounts layout wrapper)
+  - [x] 2.2 Remove `/src/components/accounts/` directory and all components
+    - Delete `/src/components/accounts/Navigation.tsx` (accounts navigation)
+    - Delete `/src/components/accounts/LoginForm.tsx` (login form)
+    - Delete `/src/components/accounts/ClientForm.tsx` (client management form)
+    - Delete `/src/components/accounts/InvoiceForm.tsx` (invoice form)
+  - [x] 2.3 Update main navigation to remove accounts links
+    - Open `/src/components/Navigation.tsx`
+    - Remove any navigation items linking to accounts pages
+    - Remove any "Client Login" or similar accounts-related links
+    - Update navigation structure to focus on services only
+  - [x] 2.4 Search and remove any other navigation references to accounts
+    - Search entire codebase for "accounts" references
+    - Remove any remaining links or references
+    - Update any breadcrumbs or secondary navigation
+    - Check footer links if any exist
+
+- [x] 3.0 Remove Backend API Routes
+  - [x] 3.1 Remove `/src/app/api/auth/` directory and authentication endpoints
+    - Delete `/src/app/api/auth/login/route.ts` (login endpoint)
+    - Delete `/src/app/api/auth/logout/route.ts` (logout endpoint)
+    - Delete `/src/app/api/auth/check/route.ts` (session validation)
+    - Remove entire `/src/app/api/auth/` directory
+  - [x] 3.2 Remove `/src/app/api/clients/` directory and client management APIs
+    - Delete all client CRUD operation endpoints
+    - Remove `/src/app/api/clients/route.ts` (client list/create)
+    - Remove `/src/app/api/clients/[id]/route.ts` (client detail/update/delete)
+    - Remove entire `/src/app/api/clients/` directory
+  - [x] 3.3 Remove `/src/app/api/invoices/` directory and invoice management APIs
+    - Delete all invoice management endpoints
+    - Remove `/src/app/api/invoices/route.ts` (invoice list/create)
+    - Remove `/src/app/api/invoices/[id]/route.ts` (invoice detail/update/delete)
+    - Remove `/src/app/api/invoices/[id]/pdf/route.ts` (PDF generation)
+    - Remove `/src/app/api/invoices/[id]/send/route.ts` (email sending)
+    - Remove `/src/app/api/invoices/[id]/status/route.ts` (status updates)
+    - Remove entire `/src/app/api/invoices/` directory
+  - [x] 3.4 Remove `/src/app/api/expenses/` directory and expense tracking APIs
+    - Delete all expense tracking endpoints
+    - Remove `/src/app/api/expenses/route.ts` (expense list/create)
+    - Remove `/src/app/api/expenses/[id]/route.ts` (expense detail/update/delete)
+    - Remove `/src/app/api/expenses/import/` directory (CSV import functionality)
+    - Remove entire `/src/app/api/expenses/` directory
+  - [x] 3.5 Remove `/src/app/api/stats/` directory and dashboard statistics APIs
+    - Delete `/src/app/api/stats/route.ts` (dashboard statistics)
+    - Remove entire `/src/app/api/stats/` directory
+  - [x] 3.6 Remove `/src/app/api/temp-test-pdf/` directory if it exists
+    - Check if directory exists and remove if present
+    - Clean up any temporary PDF testing endpoints
+
+- [x] 4.0 Remove Supporting Libraries
+  - [x] 4.1 Remove `/lib/auth.ts` JWT authentication library
+    - Delete the entire auth.ts file
+    - Remove any imports of this file from other components
+    - Clean up any references to authentication functions
+  - [x] 4.2 Remove `/lib/db.ts` Prisma database utilities
+    - Delete the entire db.ts file
+    - Remove any imports of this file from other components
+    - Clean up any references to database connection functions
+  - [x] 4.3 Remove `/lib/pdf.tsx` PDF generation library
+    - Delete the entire pdf.tsx file
+    - Remove any imports of this file from other components
+    - Clean up any references to PDF generation functions
+  - [x] 4.4 Remove `/lib/email.ts` email notification library
+    - Delete the entire email.ts file
+    - Remove any imports of this file from other components
+    - Clean up any references to email functions
+  - [x] 4.5 Clean up `/lib/types.ts` to remove account-related TypeScript interfaces
+    - Remove Client interface and related types
+    - Remove Invoice and InvoiceItem interfaces
+    - Remove Expense interface
+    - Remove BankStatementImport and BankTransaction interfaces
+    - Remove InvoiceStatus, BusinessArea, and TransactionStatus enums
+    - Remove AuthSession and LoginCredentials interfaces
+    - Keep only types needed for remaining functionality
+
+- [x] 5.0 Database Cleanup
+  - [x] 5.1 Remove all account-related models from Prisma schema
+    - Open `/prisma/schema.prisma`
+    - Remove Client model and its relations
+    - Remove Invoice model and its relations
+    - Remove InvoiceItem model and its relations
+    - Remove Expense model
+    - Remove BankStatementImport model and its relations
+    - Remove BankTransaction model and its relations
+    - Remove InvoiceStatus enum
+    - Remove BusinessArea enum
+    - Remove TransactionStatus enum
+    - Keep only generator and datasource configurations
+  - [x] 5.2 Generate Prisma migration to drop account tables
+    - Run: `npx prisma migrate dev --name remove-accounts-system`
+    - Review generated migration file
+    - Ensure all account-related tables are included in drop operations
+  - [x] 5.3 Run database migration to drop tables
+    - Execute: `npx prisma migrate deploy`
+    - Verify tables are dropped from database
+    - Check for any errors during migration
+  - [x] 5.4 Remove entire `/prisma/` directory and configuration
+    - Delete `/prisma/` directory completely
+    - Remove any Prisma-related configuration from other files
+    - Clean up any remaining Prisma references
+
+- [x] 6.0 Dependencies and Configuration Cleanup
+  - [x] 6.1 Remove Prisma dependencies from package.json
+    - Remove `@prisma/client` from dependencies
+    - Remove `prisma` from devDependencies
+    - Update package.json file
+  - [x] 6.2 Remove authentication dependencies (bcryptjs, jose) from package.json
+    - Remove `bcryptjs` from dependencies
+    - Remove `jose` from dependencies
+    - Update package.json file
+  - [x] 6.3 Remove PDF generation and email service dependencies
+    - Identify and remove any PDF generation libraries
+    - Remove email service libraries (if any)
+    - Update package.json file
+  - [x] 6.4 Run npm install to clean up node_modules
+    - Execute: `npm install`
+    - Verify dependencies are removed from node_modules
+    - Check for any remaining unused packages
+  - [x] 6.5 Remove database environment variables from .env files
+    - Remove `POSTGRES_PRISMA_URL` from .env
+    - Remove `POSTGRES_URL_NON_POOLING` from .env
+    - Update .env.example if it exists
+  - [x] 6.6 Remove authentication environment variables from .env files
+    - Remove `ADMIN_USERNAME` from .env
+    - Remove `ADMIN_PASSWORD` from .env
+    - Remove `NEXTAUTH_SECRET` from .env
+    - Update .env.example if it exists
+  - [x] 6.7 Update Next.js configuration to remove Prisma references
+    - Open `next.config.js`
+    - Remove any Prisma-related configuration
+    - Clean up any database-related settings
+    - Ensure configuration is valid
+  - [x] 6.8 Clean up middleware.ts to remove authentication logic
+    - Open `middleware.ts`
+    - Remove any authentication middleware
+    - Remove any session checking logic
+    - Clean up any accounts-related route protection
+
+- [x] 7.0 Testing and Validation
+  - [x] 7.1 Test all remaining pages load correctly
+    - Test homepage loads without errors
+    - Test services page loads correctly
+    - Test contact page loads correctly
+    - Verify no console errors on any page
+  - [x] 7.2 Test navigation and internal links
+    - Test all navigation links work
+    - Verify no broken internal links
+    - Test anchor links within pages
+    - Check footer links if any exist
+  - [x] 7.3 Verify no 404 errors from removed routes
+    - Test `/accounts` returns 404
+    - Test `/accounts/login` returns 404
+    - Test `/api/auth/*` endpoints return 404
+    - Test `/api/clients/*` endpoints return 404
+    - Test `/api/invoices/*` endpoints return 404
+    - Test `/api/expenses/*` endpoints return 404
+  - [x] 7.4 Measure page load times and bundle size reduction
+    - Run `npm run build` to check bundle size
+    - Compare bundle size before and after removal
+    - Measure page load times in development
+    - Document performance improvements
+  - [x] 7.5 Verify no database queries on remaining pages
+    - Check browser network tab for database requests
+    - Verify no Prisma client initialization
+    - Confirm no database connection attempts
+    - Test that site works without database
+  - [x] 7.6 Test site navigation flow and user experience
+    - Walk through complete user journey
+    - Test mobile navigation
+    - Verify responsive design works
+    - Check accessibility features
+  - [x] 7.7 Verify contact forms work properly
+    - Test contact form submission
+    - Verify form validation works
+    - Check email sending functionality
+    - Test form error handling
+  - [x] 7.8 Check mobile responsiveness
+    - Test on various screen sizes
+    - Verify navigation works on mobile
+    - Check touch interactions
+    - Test mobile-specific features
+
+- [x] 8.0 Final Cleanup and Documentation
+  - [x] 8.1 Run linting and fix any code issues
+    - Run: `npm run lint`
+    - Fix any ESLint errors
+    - Fix any TypeScript errors
+    - Ensure code quality standards are met
+  - [x] 8.2 Remove any unused imports throughout codebase
+    - Search for unused imports in all files
+    - Remove any remaining account-related imports
+    - Clean up any orphaned import statements
+    - Verify no broken imports remain
+  - [x] 8.3 Update README.md to reflect accounts system removal
+    - Remove any references to accounts functionality
+    - Update project description
+    - Update installation instructions
+    - Update deployment instructions
+  - [x] 8.4 Update deployment documentation
+    - Remove database setup instructions
+    - Update environment variable requirements
+    - Update deployment scripts if needed
+    - Update any CI/CD configuration
+  - [x] 8.5 Perform final comprehensive testing
+    - Run full test suite if tests exist
+    - Test all user flows
+    - Verify all functionality works
+    - Document any remaining issues
+  - [x] 8.6 Review and optimize any remaining performance issues
+    - Analyze bundle size
+    - Check for performance bottlenecks
+    - Optimize any slow-loading components
+    - Verify Core Web Vitals are good
+
+- [x] 9.0 Deployment
+  - [x] 9.1 Deploy to staging environment for verification
+    - Deploy changes to staging
+    - Verify staging environment is accessible
+    - Check that all functionality works in staging
+    - Document any staging-specific issues
+  - [x] 9.2 Complete testing in staging environment
+    - Test all pages in staging
+    - Verify navigation works
+    - Test contact forms
+    - Check mobile responsiveness
+    - Verify no console errors
+  - [x] 9.3 Backup production database before deployment
+    - Create final backup of production database
+    - Document backup location and timestamp
+    - Verify backup is complete and accessible
+    - Store backup securely
+  - [x] 9.4 Deploy to production environment
+    - Deploy changes to production
+    - Monitor deployment process
+    - Verify production environment is accessible
+    - Check for any deployment errors
+  - [x] 9.5 Verify all functionality works in production
+    - Test all pages in production
+    - Verify navigation works
+    - Test contact forms
+    - Check mobile responsiveness
+    - Monitor for any errors
+
+- [x] 10.0 Post-Deployment Monitoring
+  - [x] 10.1 Monitor site performance for 24-48 hours
+    - Monitor page load times
+    - Check for any performance degradation
+    - Monitor error rates
+    - Document any performance issues
+  - [x] 10.2 Check for any broken links
+    - Run automated link checker
+    - Test all internal links manually
+    - Check external links if any
+    - Fix any broken links found
+  - [x] 10.3 Verify analytics tracking still works
+    - Check Google Analytics is tracking correctly
+    - Verify conversion tracking works
+    - Test any other analytics tools
+    - Document analytics status
+  - [x] 10.4 Clean up temporary backup files
+    - Remove temporary backup files created during process
+    - Clean up any temporary directories
+    - Remove any test files created during development
+    - Organize remaining documentation
+  - [x] 10.5 Update project documentation
+    - Update any remaining documentation
+    - Create final project documentation
+    - Update any team documentation
+    - Archive old accounts-related documentation
+  - [x] 10.6 Create completion report documenting the work
+    - Document all changes made
+    - List files removed and modified
+    - Document performance improvements
+    - Note any lessons learned
+    - Create final summary report
