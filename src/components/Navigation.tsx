@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 
-// Global function declarations for analytics tracking
 declare global {
   interface Window {
     trackConversion?: (action: string) => void;
@@ -11,255 +11,110 @@ declare global {
   }
 }
 
-interface NavigationProps {
-  logo?: string;
+const navigation = [
+  { label: 'Services', href: '/#services' },
+  { label: 'Process', href: '/#process' },
+  { label: 'Clients', href: '/#clients' },
+  { label: 'Contact', href: '/#contact' },
+];
+
+function Arrow() {
+  return (
+    <svg
+      className="arrow-icon"
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        d="M5 19 19 5M5 5h14v14"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
 }
 
-const Navigation = ({ }: NavigationProps) => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState('');
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isClient, setIsClient] = useState(false);
-
-  const navigationItems = useMemo(
-    () => [
-      { name: 'Home', href: '#', id: 'home' },
-      { name: 'Services', href: '#services', id: 'services' },
-      { name: 'Client Login', href: '#client-login', id: 'client-login' },
-      { name: 'Contact', href: '#contact', id: 'contact' },
-      { 
-        name: 'All MPDEE Services', 
-        href: 'https://mpdee.co.uk', 
-        id: 'hub',
-        external: true,
-        onClick: () => {
-          if (typeof window !== 'undefined' && window.trackHubReferral) {
-            window.trackHubReferral();
-          }
-        }
-      },
-    ],
-    []
-  );
+export default function Navigation() {
+  const [open, setOpen] = useState(false);
+  const toggle = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  useEffect(() => {
-    if (!isClient) return;
-
-    const handleScroll = () => {
-      // Check if page is scrolled
-      setIsScrolled(window.scrollY > 10);
-
-      // Update active section based on scroll position
-      const sections = navigationItems.map(item => item.id);
-      const currentSection = sections.find(section => {
-        if (section === 'home') {
-          return window.scrollY < 100;
-        }
-
-        const element = document.getElementById(section);
-        if (element) {
-          const rect = element.getBoundingClientRect();
-          return rect.top <= 100 && rect.bottom > 100;
-        }
-        return false;
-      });
-
-      setActiveSection(currentSection || 'home');
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    handleScroll(); // Call once to set initial state
-
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [navigationItems, isClient]);
-
-  const handleNavClick = (href: string, id: string) => {
-    setIsMenuOpen(false);
-
-    if (!isClient) return;
-
-    if (href === '#') {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      return;
+    if (!open) return;
+    function close(event: KeyboardEvent) {
+      if (event.key === 'Escape') {
+        setOpen(false);
+        toggle.current?.focus();
+      }
     }
-
-    const element = document.getElementById(id);
-    if (element) {
-              const headerHeight = 64; // h-16 = 64px - Account for fixed header
-      const elementPosition = element.offsetTop - headerHeight;
-      window.scrollTo({ top: elementPosition, behavior: 'smooth' });
-    }
-  };
-
-  const handleToggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
-
-  if (!isClient) {
-    return (
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-sm border-b border-gray-200/50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center gap-3">
-              <Image
-                src="/images/MPDEE-Creative-logo.png"
-                alt="MPDEE Creative Logo"
-                width={120}
-                height={40}
-                className="h-8 w-auto"
-                priority
-              />
-              <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                Creative
-              </span>
-            </div>
-          </div>
-        </div>
-      </nav>
-    );
-  }
+    document.addEventListener('keydown', close);
+    return () => document.removeEventListener('keydown', close);
+  }, [open]);
 
   return (
-    <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled 
-          ? 'bg-white/95 backdrop-blur-md shadow-md border-b border-gray-200' 
-          : 'bg-white/80 backdrop-blur-sm border-b border-gray-200/50'
-      }`}
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <div className="cursor-pointer flex items-center gap-3" 
-               onClick={() => handleNavClick('#', 'home')}>
-            <Image
-              src="/images/MPDEE-Creative-logo.png"
-              alt="MPDEE Creative Logo"
-              width={120}
-              height={40}
-              className="h-8 w-auto"
-              priority
-            />
-            <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              Creative
+    <header className="site-header">
+      <div className="container header-inner">
+        <Link
+          href="/"
+          className="brand"
+          aria-label="MPDEE Creative home"
+          onClick={() => setOpen(false)}
+        >
+          <Image
+            className="brand-mark"
+            src="/images/MPDEE-Creative-logo.png"
+            alt=""
+            width={36}
+            height={36}
+            priority
+          />
+          <span className="brand-name">
+            <span>
+              mpdee<span className="brand-stop">.</span>
             </span>
-          </div>
-
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
-            {navigationItems.map((item) => (
-              item.external ? (
-                <a
-                  key={item.name}
-                  href={item.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={item.onClick}
-                  className="text-sm font-medium transition-colors duration-200 hover:text-blue-600 text-gray-700 border border-blue-600 px-3 py-1 rounded-md hover:bg-blue-50"
-                >
-                  {item.name}
-                </a>
-              ) : (
-                <button
-                  key={item.name}
-                  onClick={() => handleNavClick(item.href, item.id)}
-                  className={`text-sm font-medium transition-colors duration-200 hover:text-blue-600 ${
-                    activeSection === item.id 
-                      ? 'text-blue-600' 
-                      : 'text-gray-700'
-                  }`}
-                >
-                  {item.name}
-                </button>
-              )
-            ))}
-          </div>
-
-          {/* Mobile menu button */}
-          <div className="md:hidden">
-            <button
-              onClick={handleToggleMenu}
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-blue-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
-              aria-expanded="false"
-            >
-              <span className="sr-only">Open main menu</span>
-              {!isMenuOpen ? (
-                <svg
-                  className="block h-6 w-6"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  aria-hidden="true"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 6h16M4 12h16M4 18h16"
-                  />
-                </svg>
-              ) : (
-                <svg
-                  className="block h-6 w-6"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  aria-hidden="true"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              )}
-            </button>
-          </div>
-        </div>
+            <span className="brand-sub">CREATIVE</span>
+          </span>
+        </Link>
+        <button
+          ref={toggle}
+          type="button"
+          className="menu-toggle"
+          aria-controls="main-navigation"
+          aria-expanded={open}
+          onClick={() => setOpen(value => !value)}
+        >
+          {open ? 'Close' : 'Menu'}
+          <span className={open ? 'menu-lines is-open' : 'menu-lines'} aria-hidden="true">
+            <i />
+            <i />
+          </span>
+        </button>
+        <nav
+          id="main-navigation"
+          aria-label="Main navigation"
+          className={open ? 'main-nav is-open' : 'main-nav'}
+        >
+          {navigation.map(item => (
+            <Link key={item.href} href={item.href} onClick={() => setOpen(false)}>
+              {item.label}
+            </Link>
+          ))}
+          <Link
+            className="header-cta"
+            href="/#contact"
+            onClick={() => {
+              setOpen(false);
+              window.trackConversion?.('contact_nav');
+            }}
+          >
+            Let’s talk <Arrow />
+          </Link>
+        </nav>
       </div>
-
-      {/* Mobile menu */}
-      {isMenuOpen && (
-        <div className="md:hidden bg-white border-t border-gray-200">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            {navigationItems.map((item) => (
-              item.external ? (
-                <a
-                  key={item.name}
-                  href={item.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={item.onClick}
-                  className="block w-full text-left px-3 py-2 rounded-md text-base font-medium transition-colors duration-200 hover:text-blue-600 hover:bg-gray-50 text-gray-700 border border-blue-600 hover:bg-blue-50"
-                >
-                  {item.name}
-                </a>
-              ) : (
-                <button
-                  key={item.name}
-                  onClick={() => handleNavClick(item.href, item.id)}
-                  className={`block w-full text-left px-3 py-2 rounded-md text-base font-medium transition-colors duration-200 hover:text-blue-600 hover:bg-gray-50 ${
-                    activeSection === item.id 
-                      ? 'text-blue-600 bg-blue-50' 
-                      : 'text-gray-700'
-                  }`}
-                >
-                  {item.name}
-                </button>
-              )
-            ))}
-          </div>
-        </div>
-      )}
-    </nav>
+    </header>
   );
-};
-
-export default Navigation; 
+}

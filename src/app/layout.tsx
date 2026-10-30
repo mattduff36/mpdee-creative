@@ -1,16 +1,21 @@
 import type { Metadata, Viewport } from 'next';
-import { Inter } from 'next/font/google';
+import localFont from 'next/font/local';
 import { generateMPDEEMetadata } from '@/shared/seo-utils';
 import Script from 'next/script';
 import Layout from '@/components/Layout';
 import StructuredData from '@/components/StructuredData';
 import './globals.css';
 
-const inter = Inter({ subsets: ['latin'] });
+const manrope = localFont({
+  src: '../../public/fonts/Manrope.ttf',
+  variable: '--font-manrope',
+  display: 'swap',
+  weight: '200 800',
+});
 
 export const metadata: Metadata = {
   ...generateMPDEEMetadata({
-    title: 'MPDEE Creative - Professional Audio Production Services',
+    title: 'MPDEE Creative — Good ideas. Unmistakable sound.',
     description:
       'Professional audio production services specializing in radio commercial production, audio imaging, and event recording. High-quality sound design and production.',
     keywords: [
@@ -60,6 +65,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
+  themeColor: '#f7f6f2',
 };
 
 export default function RootLayout({
@@ -68,11 +74,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" className={manrope.variable}>
       <head>
         <StructuredData />
       </head>
-      <body className={inter.className}>
+      <body>
         {/* Cross-Domain Google Analytics */}
         <Script
           async
@@ -119,4 +125,4 @@ export default function RootLayout({
       </body>
     </html>
   );
-} 
+}

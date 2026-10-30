@@ -8,19 +8,15 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
-    <div className="min-h-screen flex flex-col bg-white text-gray-900">
-      {/* Navigation */}
+    <>
+      <a className="skip-link" href="#main-content">
+        Skip to content
+      </a>
       <Navigation />
-
-      {/* Main content */}
-      <main className="flex-grow" role="main">
-        {children}
-      </main>
-
-      {/* Footer */}
+      <main id="main-content">{children}</main>
       <Footer />
-    </div>
+    </>
   );
 };
 
-export default Layout; 
+export default Layout;
